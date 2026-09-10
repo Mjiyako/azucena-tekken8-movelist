@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#121826" />
+    <meta name="description" content="Azucena Tekken 8 mobile movelist with generated input images, notation, and frame data." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css?v=8" />
+    <title>Azucena Book</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Tekken 8</p>
+        <h1>Azucena Book</h1>
+      </div>
+      <button class="icon-button" id="installButton" type="button" aria-label="Install app" title="Install app">
+        <span aria-hidden="true">+</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="control-deck" aria-label="Movelist controls">
+        <div class="segmented" role="tablist" aria-label="View mode">
+          <button class="segment active" type="button" data-view="paired">Paired</button>
+          <button class="segment" type="button" data-view="notation">Notation</button>
+          <button class="segment" type="button" data-view="scans">Combos</button>
+        </div>
+
+        <a class="notes-download" href="Azucena-Book-Movelist.pdf" download>
+          <span aria-hidden="true">&#8595;</span>
+          <strong>Download PDF</strong>
+        </a>
+
+        <label class="search-box">
+          <span class="sr-only">Search moves</span>
+          <input id="searchInput" type="search" placeholder="Search command, name, frames..." autocomplete="off" />
+        </label>
+
+        <div class="filter-row" aria-label="Quick filters">
+          <button class="filter" type="button" data-filter="all">ALL MOVES</button>
+          <button class="filter" type="button" data-filter="safe">SAFE ON BLOCK</button>
+          <button class="filter" type="button" data-filter="plus">PLUS ON BLOCK</button>
+          <button class="filter active" type="button" data-filter="good">GOOD MOVES</button>
+          <button class="filter" type="button" data-filter="fast">FAST MOVES</button>
+          <button class="filter" type="button" data-filter="evasive">EVASIVE</button>
+          <button class="filter" type="button" data-filter="tracking">TRACKING</button>
+          <button class="filter" type="button" data-filter="delayable">DELAYABLE</button>
+          <button class="filter" type="button" data-filter="stance">STANCE</button>
+          <button class="filter" type="button" data-filter="lows">LOWS</button>
+          <button class="filter" type="button" data-filter="chlaunch">CH LAUNCHING</button>
+          <button class="filter" type="button" data-filter="heat">HEAT MOVES</button>
+          <button class="filter" type="button" data-filter="combos">COMBO</button>
+        </div>
+      </section>
+
+      <section class="legend" aria-label="Notation support">
+        <span><b>1</b> LP</span>
+        <span><b>2</b> RP</span>
+        <span><b>3</b> LK</span>
+        <span><b>4</b> RK</span>
+        <span><b>f</b> forward</span>
+        <span><b>b</b> back</span>
+        <span><b>d</b> down</span>
+        <span><b>u</b> up</span>
+        <span><b>df</b> down-forward</span>
+        <span><b>ws</b> while standing</span>
+        <span><b>HOLD</b> keep pressed</span>
+        <span><b>~</b> fast input</span>
+        <span><b>:</b> exact timing</span>
+      </section>
+
+      <section class="stats-strip" aria-label="Move counts">
+        <div><strong id="visibleCount">0</strong><span>shown</span></div>
+        <div><strong id="linkedCount">0</strong><span>combo images</span></div>
+        <div><strong>3.02.01</strong><span>source patch</span></div>
+      </section>
+
+      <h2 id="sectionTitle" class="section-heading">GOOD MOVES</h2>
+      <section id="movesList" class="moves-list" aria-live="polite"></section>
+      <section id="imageMovesList" class="image-moves-list" aria-live="polite"></section>
+      <section id="scanGrid" class="scan-grid" hidden aria-live="polite"></section>
+    </main>
+
+    <template id="moveTemplate">
+      <article class="move-card">
+        <button class="move-summary" type="button" aria-expanded="false">
+          <span class="move-title-row">
+            <span class="move-title-copy">
+              <span class="move-name"></span>
+              <strong class="command"></strong>
+            </span>
+            <span class="expand-indicator" aria-hidden="true"></span>
+          </span>
+          <span class="scan-pane generated-pane"></span>
+        </button>
+        <div class="move-details" hidden>
+          <div class="frame-grid">
+            <div><span>Startup</span><strong class="startup"></strong></div>
+            <div><span>Block</span><strong class="block"></strong></div>
+            <div><span>Hit</span><strong class="hit"></strong></div>
+            <div><span>CH</span><strong class="counter-hit"></strong></div>
+          </div>
+          <div class="hitline"></div>
+          <p class="notes"></p>
+        </div>
+      </article>
+    </template>
+
+    <script src="moves-data.js?v=8"></script>
+    <script src="app.js?v=8"></script>
+  </body>
+</html>
