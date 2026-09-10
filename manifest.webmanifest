@@ -1,0 +1,9 @@
+{
+  "name": "Azucena Book",
+  "short_name": "Azucena Book",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d1118",
+  "theme_color": "#121826",
+  "icons": []
+}
