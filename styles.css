@@ -10,6 +10,8 @@
   --red: #ff5d6c;
   --amber: #f6c358;
   --green: #7be39f;
+  --purple: #b58cff;
+  --baby-blue: #bfe9ff;
 }
 
 * { box-sizing: border-box; }
@@ -195,6 +197,40 @@ main {
 
 .legend b { color: var(--amber); }
 
+.color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.85rem;
+}
+
+.color-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.color-chip .swatch {
+  display: block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.color-chip .swatch.cat-combo { background: var(--purple); }
+.color-chip .swatch.cat-throw { background: #ffffff; }
+.color-chip .swatch.cat-unsafe { background: var(--red); }
+.color-chip .swatch.cat-safe { background: var(--green); }
+.color-chip .swatch.cat-plus { background: var(--baby-blue); }
+
 .stats-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -311,6 +347,10 @@ main {
 }
 
 .input-strip {
+  --strip-c1: rgba(25, 40, 63, 0.98);
+  --strip-c2: rgba(17, 22, 33, 0.98);
+  --strip-border: rgba(103, 213, 255, 0.3);
+  --strip-tint: rgba(103, 213, 255, 0.05);
   display: flex;
   align-items: center;
   align-content: center;
@@ -320,12 +360,52 @@ main {
   min-height: 7.75rem;
   overflow: visible;
   padding: 1.25rem 0.8rem 1rem;
-  border: 1px solid rgba(103, 213, 255, 0.3);
+  border: 1px solid var(--strip-border);
   border-radius: 0.5rem;
   background:
-    linear-gradient(90deg, rgba(25, 40, 63, 0.98), rgba(17, 22, 33, 0.98)),
+    linear-gradient(90deg, var(--strip-c1), var(--strip-c2)),
     #0b1018;
-  box-shadow: inset 0 0 2.5rem rgba(103, 213, 255, 0.05);
+  box-shadow: inset 0 0 2.5rem var(--strip-tint);
+}
+
+/* Guaranteed multi-hit strings — once the first hit lands, the rest connect */
+.input-strip.cat-combo {
+  --strip-c1: rgba(91, 58, 148, 0.55);
+  --strip-c2: rgba(29, 20, 46, 0.98);
+  --strip-border: rgba(181, 140, 255, 0.62);
+  --strip-tint: rgba(181, 140, 255, 0.14);
+}
+
+/* Throws */
+.input-strip.cat-throw {
+  --strip-c1: rgba(255, 255, 255, 0.22);
+  --strip-c2: rgba(42, 46, 56, 0.98);
+  --strip-border: rgba(255, 255, 255, 0.68);
+  --strip-tint: rgba(255, 255, 255, 0.1);
+}
+
+/* Unsafe on block */
+.input-strip.cat-unsafe {
+  --strip-c1: rgba(122, 40, 49, 0.55);
+  --strip-c2: rgba(31, 15, 18, 0.98);
+  --strip-border: rgba(255, 93, 108, 0.62);
+  --strip-tint: rgba(255, 93, 108, 0.14);
+}
+
+/* Safe on block */
+.input-strip.cat-safe {
+  --strip-c1: rgba(41, 105, 70, 0.55);
+  --strip-c2: rgba(13, 27, 19, 0.98);
+  --strip-border: rgba(123, 227, 159, 0.62);
+  --strip-tint: rgba(123, 227, 159, 0.14);
+}
+
+/* Plus on block */
+.input-strip.cat-plus {
+  --strip-c1: rgba(191, 233, 255, 0.32);
+  --strip-c2: rgba(18, 32, 44, 0.98);
+  --strip-border: rgba(191, 233, 255, 0.72);
+  --strip-tint: rgba(191, 233, 255, 0.18);
 }
 
 .command-unit,
@@ -636,7 +716,7 @@ main {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.18rem 0.32rem;
-  border-color: rgba(103, 213, 255, 0.16);
+  border-color: var(--strip-border);
   box-shadow: none;
   scrollbar-width: none;
 }
