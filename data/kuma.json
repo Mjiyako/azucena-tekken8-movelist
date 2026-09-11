@@ -804,7 +804,7 @@
       "name": "Bear X",
       "hit_level": "h,m",
       "damage": "10,20",
-      "startup": "i18~19i12~13",
+      "startup": "i18~19, i12~13",
       "block": "-8",
       "hit": "+13d",
       "counter_hit": "",

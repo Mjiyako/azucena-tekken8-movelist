@@ -1322,7 +1322,7 @@
       "name": "Twin Knee Barrage",
       "hit_level": "m,h",
       "damage": "10,20",
-      "startup": "i18~19i7~8",
+      "startup": "i18~19, i7~8",
       "block": "-11",
       "hit": "+16a (-1)",
       "counter_hit": "",

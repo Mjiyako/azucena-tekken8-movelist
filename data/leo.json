@@ -1434,7 +1434,7 @@
       "name": "Swallow Step",
       "hit_level": "m,m",
       "damage": "6,20",
-      "startup": "i18~20i22~24",
+      "startup": "i18~20, i22~24",
       "block": "-6~-4",
       "hit": "+13g",
       "counter_hit": "",
