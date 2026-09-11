@@ -92,6 +92,13 @@ function startupFrame(value) {
   return match ? Number(match[1]) : null;
 }
 
+function firstStartup(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "-";
+  const parts = raw.split(",").map((part) => part.trim()).filter(Boolean);
+  return parts.length ? parts[0] : raw;
+}
+
 function moveCategoryFlags(move) {
   const hitLevel = String(move.hit_level || "").trim().toLowerCase();
   const isThrow = !hitLevel.includes(",") && (hitLevel === "t" || hitLevel.startsWith("t("));
@@ -460,7 +467,7 @@ function renderMove(move) {
   const moveTitleCopy = node.querySelector(".move-title-copy");
   moveTitleCopy.appendChild(createCategoryDots(move));
 
-  node.querySelector(".fp-startup").textContent = move.startup || "-";
+  node.querySelector(".fp-startup").textContent = firstStartup(move.startup);
   node.querySelector(".fp-block").textContent = move.block || "-";
   node.querySelector(".fp-hit").textContent = move.hit || "-";
   node.querySelector(".fp-counter").textContent = move.counter_hit || "-";
@@ -726,7 +733,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=13");
+  navigator.serviceWorker.register("service-worker.js?v=14");
 }
 
 render();
