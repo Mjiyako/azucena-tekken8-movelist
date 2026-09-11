@@ -92,6 +92,21 @@ function startupFrame(value) {
   return match ? Number(match[1]) : null;
 }
 
+function moveColorCategory(move) {
+  const hitLevel = String(move.hit_level || "").trim().toLowerCase();
+  const isThrow = !hitLevel.includes(",") && (hitLevel === "t" || hitLevel.startsWith("t("));
+  if (isThrow) return "cat-throw";
+
+  const isGuaranteedChain = /,/.test(String(move.command || ""));
+  if (isGuaranteedChain) return "cat-combo";
+
+  const block = numericFrame(move.block);
+  if (block === null) return "";
+  if (block > 0) return "cat-plus";
+  if (block >= -9) return "cat-safe";
+  return "cat-unsafe";
+}
+
 function isCounterHitLauncher(move) {
   const becomesAirborne = (value) => /\d+a\b/i.test(String(value || ""));
   const documentedLaunch = /launch\w*.*counter hit|counter hit.*launch/i.test(
@@ -420,7 +435,10 @@ function renderMove(move) {
     el.classList.add(frameClass(el.textContent));
   }
 
-  scanPane.appendChild(createInputStrip(move.command));
+  const inputStrip = createInputStrip(move.command);
+  const colorCategory = moveColorCategory(move);
+  if (colorCategory) inputStrip.classList.add(colorCategory);
+  scanPane.appendChild(inputStrip);
   scanPane.classList.add("has-image");
 
   if (state.view === "notation") {
@@ -664,7 +682,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=9");
+  navigator.serviceWorker.register("service-worker.js?v=10");
 }
 
 render();
