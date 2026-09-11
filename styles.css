@@ -158,6 +158,27 @@ main {
 
 .search-box input:focus { border-color: var(--blue); }
 
+.character-select select {
+  width: 100%;
+  min-height: 3.1rem;
+  padding: 0 2.4rem 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%) calc(100% - 1.15rem) center / 6px 6px no-repeat,
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%) calc(100% - 0.85rem) center / 6px 6px no-repeat,
+    #101621;
+  color: var(--text);
+  outline: none;
+  font-weight: 800;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.character-select select:focus { border-color: var(--blue); }
+
+.character-select option:disabled { color: var(--muted); }
+
 .filter-row {
   display: flex;
   gap: 0.45rem;
