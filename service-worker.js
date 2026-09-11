@@ -1,11 +1,17 @@
-const CACHE = "azucena-t8-movelist-v15";
+const CACHE = "azucena-t8-movelist-v16";
 const CORE = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
-  "./moves-data.js",
   "./manifest.webmanifest",
+  "./data/characters.json",
+  "./data/azucena.json",
+  "./data/kazuya.json",
+  "./data/jin-kazama.json",
+  "./data/paul.json",
+  "./data/law.json",
+  "./data/nina.json",
 ];
 
 self.addEventListener("install", (event) => {
@@ -24,7 +30,6 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-
   event.respondWith(
     fetch(event.request)
       .then((response) => {
