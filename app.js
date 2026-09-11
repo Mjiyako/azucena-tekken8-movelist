@@ -92,19 +92,52 @@ function startupFrame(value) {
   return match ? Number(match[1]) : null;
 }
 
-function moveColorCategory(move) {
+function moveCategoryFlags(move) {
   const hitLevel = String(move.hit_level || "").trim().toLowerCase();
   const isThrow = !hitLevel.includes(",") && (hitLevel === "t" || hitLevel.startsWith("t("));
-  if (isThrow) return "cat-throw";
-
-  const isGuaranteedChain = /,/.test(String(move.command || ""));
-  if (isGuaranteedChain) return "cat-combo";
-
+  const isCombo = /,/.test(String(move.command || ""));
   const block = numericFrame(move.block);
-  if (block === null) return "";
-  if (block > 0) return "cat-plus";
-  if (block >= -9) return "cat-safe";
-  return "cat-unsafe";
+
+  return {
+    combo: isCombo,
+    throw: isThrow,
+    unsafe: block !== null && block < -9,
+    safe: block !== null && block <= 0 && block >= -9,
+    plus: block !== null && block > 0,
+  };
+}
+
+const CATEGORY_META = [
+  { key: "combo", className: "cat-combo", label: "Guaranteed combo" },
+  { key: "throw", className: "cat-throw", label: "Throw" },
+  { key: "unsafe", className: "cat-unsafe", label: "Unsafe on block" },
+  { key: "safe", className: "cat-safe", label: "Safe on block" },
+  { key: "plus", className: "cat-plus", label: "Plus on block" },
+];
+
+function createCategoryDots(move) {
+  const flags = moveCategoryFlags(move);
+  const container = document.createElement("span");
+  container.className = "category-dots";
+
+  const activeLabels = [];
+  CATEGORY_META.forEach(({ key, className, label }) => {
+    const dot = document.createElement("i");
+    dot.className = `dot ${className}`;
+    if (flags[key]) {
+      dot.classList.add("active");
+      activeLabels.push(label);
+    }
+    container.appendChild(dot);
+  });
+
+  container.setAttribute("role", "img");
+  container.setAttribute(
+    "aria-label",
+    activeLabels.length ? `Categories: ${activeLabels.join(", ")}` : "No matching categories"
+  );
+
+  return container;
 }
 
 function isCounterHitLauncher(move) {
@@ -423,6 +456,9 @@ function renderMove(move) {
   moveName.textContent = move.name || "";
   moveName.hidden = !move.name;
   command.textContent = move.command;
+
+  const moveTitleCopy = node.querySelector(".move-title-copy");
+  moveTitleCopy.appendChild(createCategoryDots(move));
   node.querySelector(".startup").textContent = move.startup || "-";
   node.querySelector(".block").textContent = move.block || "-";
   node.querySelector(".hit").textContent = move.hit || "-";
@@ -436,8 +472,6 @@ function renderMove(move) {
   }
 
   const inputStrip = createInputStrip(move.command);
-  const colorCategory = moveColorCategory(move);
-  if (colorCategory) inputStrip.classList.add(colorCategory);
   scanPane.appendChild(inputStrip);
   scanPane.classList.add("has-image");
 
@@ -682,7 +716,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=10");
+  navigator.serviceWorker.register("service-worker.js?v=11");
 }
 
 render();
