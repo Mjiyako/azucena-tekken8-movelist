@@ -2,6 +2,8 @@ const state = {
   view: localStorage.getItem("view") || "paired",
   filter: localStorage.getItem("azucena-filter") || "good",
   query: "",
+  character: localStorage.getItem("character") || "azucena",
+  characterName: "Azucena",
 };
 
 const list = document.querySelector("#movesList");
@@ -13,8 +15,13 @@ const linkedCount = document.querySelector("#linkedCount");
 const sectionTitle = document.querySelector("#sectionTitle");
 const installButton = document.querySelector("#installButton");
 const template = document.querySelector("#moveTemplate");
+const characterSelect = document.querySelector("#characterSelect");
+const headerHeading = document.querySelector(".app-header h1");
 let deferredPrompt = null;
 let openMove = null;
+let MOVE_DATA = [];
+let SCAN_DATA = [];
+let CHARACTERS = [];
 
 const FILTER_LABELS = {
   all: "ALL MOVES",
@@ -61,18 +68,23 @@ const GOOD_MOVE_COMMANDS = new Set([
   "d+1+3",
 ]);
 
-const imageCards = SCAN_DATA.map((scan) => {
-  const move = MOVE_DATA.find((candidate) => candidate.scan === scan.src);
-  const isCombo = scan.id >= 41 || /combo/i.test(scan.label);
-  return {
-    scan,
-    move,
-    isCombo,
-    label: move ? `${move.name || move.command} · ${move.command}` : scan.label,
-  };
-});
+let imageCards = [];
+let comboCards = [];
 
-const comboCards = imageCards.filter((card) => card.isCombo);
+function rebuildImageCards() {
+  imageCards = SCAN_DATA.map((scan) => {
+    const move = MOVE_DATA.find((candidate) => candidate.scan === scan.src);
+    const isCombo = scan.id >= 41 || /combo/i.test(scan.label);
+    return {
+      scan,
+      move,
+      isCombo,
+      label: move ? `${move.name || move.command} · ${move.command}` : scan.label,
+    };
+  });
+
+  comboCards = imageCards.filter((card) => card.isCombo);
+}
 
 function frameClass(value) {
   if (!value) return "";
@@ -171,7 +183,9 @@ function matchesFilter(move) {
 
   if (state.filter === "safe") return block !== null && block >= -9;
   if (state.filter === "plus") return block !== null && block > 0;
-  if (state.filter === "good") return GOOD_MOVE_COMMANDS.has(move.command);
+  if (state.filter === "good") {
+    return state.character === "azucena" && GOOD_MOVE_COMMANDS.has(move.command);
+  }
   if (state.filter === "fast") {
     const startup = startupFrame(move.startup);
     return startup !== null && startup <= 13;
@@ -635,12 +649,13 @@ function buildMovelistPdf() {
   const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const bookTitle = `${state.characterName} Book`;
 
   doc.setFillColor(18, 24, 38);
   doc.rect(0, 0, pageWidth, pageHeight, "F");
   doc.setTextColor(246, 195, 88);
   doc.setFontSize(30);
-  doc.text("Azucena Book", 40, 90);
+  doc.text(bookTitle, 40, 90);
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(14);
   doc.text("Tekken 8 movelist — frame data reference", 40, 120);
@@ -698,14 +713,15 @@ function buildMovelistPdf() {
       doc.setFontSize(8);
       doc.setTextColor(120);
       doc.text(
-        `Azucena Book — page ${doc.internal.getNumberOfPages()}`,
+        `${bookTitle} — page ${doc.internal.getNumberOfPages()}`,
         pageWidth - 140,
         pageHeight - 20
       );
     },
   });
 
-  doc.save("Azucena-Book-Movelist.pdf");
+  const fileSlug = state.characterName.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "") || "Character";
+  doc.save(`${fileSlug}-Book-Movelist.pdf`);
 }
 
 if (downloadPdfButton) {
@@ -733,7 +749,84 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=15");
+  navigator.serviceWorker.register("service-worker.js?v=16");
 }
 
-render();
+function updateGoodFilterAvailability() {
+  const goodButton = document.querySelector('[data-filter="good"]');
+  if (goodButton) goodButton.hidden = state.character !== "azucena";
+}
+
+function updateHeaderTitle() {
+  if (headerHeading) headerHeading.textContent = state.characterName || "Azucena";
+  document.title = `${state.characterName || "Azucena"} — Tekken 8 Movelist`;
+}
+
+function populateCharacterSelect() {
+  if (!characterSelect) return;
+  characterSelect.innerHTML = "";
+  CHARACTERS.forEach((character) => {
+    const option = document.createElement("option");
+    option.value = character.id;
+    option.textContent = character.available ? character.name : `${character.name} (coming soon)`;
+    option.disabled = !character.available;
+    characterSelect.appendChild(option);
+  });
+  characterSelect.value = state.character;
+}
+
+async function switchCharacter(id, options = {}) {
+  const fallback = CHARACTERS.find((character) => character.id === "azucena");
+  const requested = CHARACTERS.find((character) => character.id === id && character.available);
+  const target = requested || fallback || { id: "azucena", name: "Azucena" };
+
+  try {
+    const response = await fetch(`data/${target.id}.json`);
+    if (!response.ok) throw new Error(`Failed to load data/${target.id}.json`);
+    const data = await response.json();
+
+    MOVE_DATA = Array.isArray(data.moves) ? data.moves : [];
+    SCAN_DATA = [];
+    state.character = target.id;
+    state.characterName = data.name || target.name;
+
+    if (!options.skipSave) localStorage.setItem("character", state.character);
+    if (state.character !== "azucena" && state.filter === "good") {
+      state.filter = "all";
+      localStorage.setItem("azucena-filter", state.filter);
+    }
+
+    rebuildImageCards();
+    updateGoodFilterAvailability();
+    updateHeaderTitle();
+    if (characterSelect && characterSelect.value !== state.character) {
+      characterSelect.value = state.character;
+    }
+    render();
+  } catch (error) {
+    console.error("Could not load character data", target.id, error);
+    if (target.id !== "azucena") {
+      await switchCharacter("azucena", { skipSave: true });
+    }
+  }
+}
+
+if (characterSelect) {
+  characterSelect.addEventListener("change", (event) => {
+    switchCharacter(event.target.value);
+  });
+}
+
+async function init() {
+  try {
+    const response = await fetch("data/characters.json");
+    CHARACTERS = await response.json();
+  } catch (error) {
+    console.error("Could not load character list", error);
+    CHARACTERS = [{ id: "azucena", name: "Azucena", available: true }];
+  }
+  populateCharacterSelect();
+  await switchCharacter(state.character, { skipSave: true });
+}
+
+init();
