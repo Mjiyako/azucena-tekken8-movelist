@@ -306,32 +306,44 @@ main {
 
 .move-title-copy { min-width: 0; flex: 1 1 auto; }
 
+.move-name-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.move-name-line .move-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
 .frame-preview {
   display: flex;
   flex: 0 0 auto;
-  gap: 0.5rem;
-  align-items: center;
+  align-items: baseline;
+  gap: 0.32rem;
+  margin-left: auto;
 }
 
 .frame-preview-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 1.9rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.12rem;
+  white-space: nowrap;
 }
 
 .frame-preview-cell small {
-  margin-bottom: 0.14rem;
   color: var(--muted);
-  font-size: 0.56rem;
+  font-size: 0.5rem;
   font-weight: 800;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   line-height: 1;
 }
 
 .frame-preview-cell strong {
-  font-size: 0.8rem;
+  font-size: 0.62rem;
   font-weight: 800;
   line-height: 1;
 }
