@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#121826" />
     <meta name="description" content="Azucena Tekken 8 mobile movelist with generated input images, notation, and frame data." />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=13" />
+    <link rel="stylesheet" href="styles.css?v=14" />
     <title>Azucena Book</title>
   </head>
   <body>
@@ -22,6 +22,11 @@
 
     <main>
       <section class="control-deck" aria-label="Movelist controls">
+        <label class="character-select">
+          <span class="sr-only">Character</span>
+          <select id="characterSelect" aria-label="Select character"></select>
+        </label>
+
         <div class="segmented" role="tablist" aria-label="View mode">
           <button class="segment active" type="button" data-view="paired">Paired</button>
           <button class="segment" type="button" data-view="notation">Notation</button>
@@ -135,7 +140,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.8/jspdf.plugin.autotable.min.js"></script>
-    <script src="moves-data.js?v=10"></script>
-    <script src="app.js?v=15"></script>
+    <script src="app.js?v=16"></script>
   </body>
 </html>
