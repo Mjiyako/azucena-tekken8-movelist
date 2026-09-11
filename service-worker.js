@@ -1,4 +1,4 @@
-const CACHE = "azucena-t8-movelist-v8";
+const CACHE = "azucena-t8-movelist-v9";
 const CORE = [
   "./",
   "./index.html",
