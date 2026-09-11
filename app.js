@@ -726,7 +726,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=12");
+  navigator.serviceWorker.register("service-worker.js?v=13");
 }
 
 render();
