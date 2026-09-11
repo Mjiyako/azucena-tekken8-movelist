@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#121826" />
     <meta name="description" content="Azucena Tekken 8 mobile movelist with generated input images, notation, and frame data." />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=12" />
+    <link rel="stylesheet" href="styles.css?v=13" />
     <title>Azucena Book</title>
   </head>
   <body>
@@ -96,14 +96,16 @@
         <button class="move-summary" type="button" aria-expanded="false">
           <span class="move-title-row">
             <span class="move-title-copy">
-              <span class="move-name"></span>
+              <span class="move-name-line">
+                <span class="move-name"></span>
+                <span class="frame-preview">
+                  <span class="frame-preview-cell"><small>St</small><strong class="fp-startup"></strong></span>
+                  <span class="frame-preview-cell"><small>Bl</small><strong class="fp-block"></strong></span>
+                  <span class="frame-preview-cell"><small>Hi</small><strong class="fp-hit"></strong></span>
+                  <span class="frame-preview-cell"><small>CH</small><strong class="fp-counter"></strong></span>
+                </span>
+              </span>
               <strong class="command"></strong>
-            </span>
-            <span class="frame-preview">
-              <span class="frame-preview-cell"><small>Start</small><strong class="fp-startup"></strong></span>
-              <span class="frame-preview-cell"><small>Block</small><strong class="fp-block"></strong></span>
-              <span class="frame-preview-cell"><small>Hit</small><strong class="fp-hit"></strong></span>
-              <span class="frame-preview-cell"><small>Counter</small><strong class="fp-counter"></strong></span>
             </span>
             <span class="expand-indicator" aria-hidden="true"></span>
           </span>
@@ -125,6 +127,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.8/jspdf.plugin.autotable.min.js"></script>
     <script src="moves-data.js?v=10"></script>
-    <script src="app.js?v=12"></script>
+    <script src="app.js?v=13"></script>
   </body>
 </html>
