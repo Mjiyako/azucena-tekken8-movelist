@@ -552,8 +552,119 @@ installButton.addEventListener("click", async () => {
   deferredPrompt = null;
 });
 
+const downloadPdfButton = document.querySelector("#downloadPdfButton");
+
+function pdfNoteLines(text) {
+  return String(text || "")
+    .split("*")
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function buildMovelistPdf() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  doc.setFillColor(18, 24, 38);
+  doc.rect(0, 0, pageWidth, pageHeight, "F");
+  doc.setTextColor(246, 195, 88);
+  doc.setFontSize(30);
+  doc.text("Azucena Book", 40, 90);
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14);
+  doc.text("Tekken 8 movelist — frame data reference", 40, 120);
+  doc.setFontSize(10);
+  doc.text(
+    "Source patch 3.02.01 · Generated " + new Date().toLocaleDateString(),
+    40,
+    140
+  );
+
+  doc.addPage();
+
+  const rows = MOVE_DATA.map((move) => [
+    move.command || "-",
+    move.name || "-",
+    move.hit_level || "-",
+    move.damage || "-",
+    move.startup || "-",
+    move.block || "-",
+    move.hit || "-",
+    move.counter_hit || "-",
+    pdfNoteLines(move.notes).join("\n") || "-",
+  ]);
+
+  doc.autoTable({
+    head: [["Command", "Name", "Lvl", "Dmg", "Start", "Block", "Hit", "CH", "Notes"]],
+    body: rows,
+    startY: 30,
+    theme: "grid",
+    styles: {
+      fontSize: 7.5,
+      cellPadding: 4,
+      valign: "top",
+      lineColor: [210, 210, 210],
+      lineWidth: 0.4,
+    },
+    headStyles: {
+      fillColor: [246, 195, 88],
+      textColor: [18, 24, 38],
+      fontStyle: "bold",
+    },
+    alternateRowStyles: { fillColor: [246, 248, 250] },
+    columnStyles: {
+      0: { cellWidth: 70 },
+      1: { cellWidth: 110 },
+      2: { cellWidth: 28 },
+      3: { cellWidth: 34 },
+      4: { cellWidth: 34 },
+      5: { cellWidth: 34 },
+      6: { cellWidth: 34 },
+      7: { cellWidth: 34 },
+      8: { cellWidth: "auto" },
+    },
+    didDrawPage: () => {
+      doc.setFontSize(8);
+      doc.setTextColor(120);
+      doc.text(
+        `Azucena Book — page ${doc.internal.getNumberOfPages()}`,
+        pageWidth - 140,
+        pageHeight - 20
+      );
+    },
+  });
+
+  doc.save("Azucena-Book-Movelist.pdf");
+}
+
+if (downloadPdfButton) {
+  downloadPdfButton.addEventListener("click", () => {
+    if (!window.jspdf) {
+      window.alert("The PDF generator hasn't finished loading yet. Check your connection and try again in a moment.");
+      return;
+    }
+    const label = downloadPdfButton.querySelector("strong");
+    const originalText = label.textContent;
+    label.textContent = "Generating…";
+    downloadPdfButton.disabled = true;
+    setTimeout(() => {
+      try {
+        buildMovelistPdf();
+      } catch (error) {
+        console.error("PDF generation failed", error);
+        window.alert("Sorry, the PDF could not be generated.");
+      } finally {
+        label.textContent = originalText;
+        downloadPdfButton.disabled = false;
+      }
+    }, 30);
+  });
+}
+
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=8");
+  navigator.serviceWorker.register("service-worker.js?v=9");
 }
 
 render();
