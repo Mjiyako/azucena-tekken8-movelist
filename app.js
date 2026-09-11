@@ -459,6 +459,16 @@ function renderMove(move) {
 
   const moveTitleCopy = node.querySelector(".move-title-copy");
   moveTitleCopy.appendChild(createCategoryDots(move));
+
+  node.querySelector(".fp-startup").textContent = move.startup || "-";
+  node.querySelector(".fp-block").textContent = move.block || "-";
+  node.querySelector(".fp-hit").textContent = move.hit || "-";
+  node.querySelector(".fp-counter").textContent = move.counter_hit || "-";
+  for (const selector of [".fp-block", ".fp-hit", ".fp-counter"]) {
+    const el = node.querySelector(selector);
+    el.classList.add(frameClass(el.textContent));
+  }
+
   node.querySelector(".startup").textContent = move.startup || "-";
   node.querySelector(".block").textContent = move.block || "-";
   node.querySelector(".hit").textContent = move.hit || "-";
@@ -716,7 +726,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=11");
+  navigator.serviceWorker.register("service-worker.js?v=12");
 }
 
 render();
