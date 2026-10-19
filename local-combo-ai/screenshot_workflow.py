@@ -25,6 +25,7 @@ TOKEN = secrets.token_urlsafe(32)
 BUSY = False
 LAST_ERROR = None
 STATE_LOCK = threading.Lock()
+RECORDINGS = {}
 
 
 def folder_for(job_id):
@@ -83,11 +84,19 @@ def source_info(url, character, author, local_file):
 
 
 @engine.single_worker
-def capture(url, character, author, local_file='', interval=3):
+def capture(url, character, author, local_file='', interval=3, recording_start=None):
     interval = float(interval)
     if not math.isfinite(interval) or not 0.5 <= interval <= 15:
         raise ValueError('Screenshot interval must be between 0.5 and 15 seconds.')
-    vid, cached, info, evidence = source_info(url, character, author, local_file)
+    if recording_start is not None:
+        vid = engine.video_id(url)
+        if (character,author) not in engine.registered_sources().get(vid,[]):
+            raise ValueError('Recording requires a checked creator guide URL for the selected character.')
+        cached = engine.JOBS/f'{author.lower()}-{vid}-{character}'
+        info = {'id':vid,'title':f'{character} Season 3 guide — browser recording'}
+        evidence = engine.validate_source(info,character,author)
+    else:
+        vid, cached, info, evidence = source_info(url, character, author, local_file)
     job_id = f'{author.lower()}-{vid}-{character}'
     folder = folder_for(job_id)
     folder.mkdir(parents=True, exist_ok=True)
@@ -160,6 +169,13 @@ def capture(url, character, author, local_file='', interval=3):
             rows = [new_row(p.name, t) for p,t in zip(images,times)]
             state['sourceKind'] = 'video'
         state.update(status='screenshots-ready', imageCount=len(rows), updatedAt=engine.utc())
+        if recording_start is not None:
+            state.update(recordingTimingUnverified=True, recordingStartSeconds=recording_start,
+                         duration=state['duration']+recording_start)
+            for row in rows:
+                row['second'] += recording_start
+                row['timestampUnknown'] = True
+                row['uncertainties'].append('Recording time is approximate. Correct source timestamps for lead-in, ads, pauses or buffering.')
         engine.write_json(folder/'rows.json', rows)
         engine.write_json(folder/'job.json', state)
         return state
@@ -193,6 +209,8 @@ def read_screenshots(job_id):
             value = transcribe(folder/'images'/row['image'], state)
             for key in ('notation','damage','hits','category','conditions','uncertainties'):
                 row[key] = value.get(key)
+            if state.get('recordingTimingUnverified'):
+                row['uncertainties'].append('Recorded elapsed time is not a verified YouTube timestamp. Check the exact source combo start.')
             row['notation'] = row['notation'] or ''
             row.update(status='needs-manual-reading' if value.get('modelReadFailed') else 'read',
                        detectedKind=value.get('kind'), section=value.get('section'),
@@ -311,6 +329,75 @@ def start_worker(function):
     threading.Thread(target=run, daemon=True).start()
 
 
+def start_recording(body):
+    global LAST_ERROR
+    vid = engine.video_id(body['url'])
+    character, author = body['character'],body['author']
+    if (character,author) not in engine.registered_sources().get(vid,[]):
+        raise ValueError('Select the matching character/creator and a checked Season 3 guide URL.')
+    interval, offset = float(body.get('interval',1)),float(body.get('sourceStart',0))
+    if not math.isfinite(interval) or not .5 <= interval <= 15:
+        raise ValueError('Screenshot interval must be 0.5–15 seconds.')
+    if not math.isfinite(offset) or not 0 <= offset < engine.config()['maxVideoMinutes']*60:
+        raise ValueError('Source start time must be valid seconds.')
+    job_id=f'{author.lower()}-{vid}-{character}'
+    folder=folder_for(job_id)
+    with STATE_LOCK:
+        if BUSY or RECORDINGS:
+            raise ValueError('Finish the current operation first.')
+        if (folder/'rows.json').exists():
+            raise ValueError('This guide already has screenshots. Read/resume its saved job instead.')
+        session=secrets.token_urlsafe(24)
+        recording_folder=engine.HOME/'browser-recordings'/session
+        recording_folder.mkdir(parents=True)
+        record={'folder':recording_folder,'jobId':job_id,'url':body['url'],'character':character,
+                'author':author,'interval':interval,'sourceStart':offset,'bytes':0}
+        RECORDINGS[session]=record
+        LAST_ERROR=None
+    engine.write_json(recording_folder/'recording.json',{k:str(v) if isinstance(v,Path) else v for k,v in record.items()})
+    engine.write_json(folder/'job.json',{'id':job_id,'character':character,'author':author,'url':body['url'],
+        'title':f'{character} — browser recording','status':'recording','updatedAt':engine.utc(),
+        'recordingTimingUnverified':True})
+    return {'session':session,'jobId':job_id}
+
+
+def append_recording(session, data):
+    record=RECORDINGS.get(session)
+    if not record:
+        raise ValueError('Unknown or finished recording session.')
+    if not data or len(data)>20000000:
+        raise ValueError('Invalid recording chunk size.')
+    if shutil.disk_usage(record['folder']).free < len(data)+2000000000:
+        raise ValueError('Recording stopped: leave at least 2 GB free disk space.')
+    if record['bytes']+len(data)>8000000000:
+        raise ValueError('Recording exceeds the 8 GB safety limit.')
+    with (record['folder']/'capture.webm').open('ab') as stream:
+        stream.write(data)
+    record['bytes']+=len(data)
+    return {'saved':len(data)}
+
+
+def finish_recording(record):
+    folder=folder_for(record['jobId'])
+    state=engine.read_json(folder/'job.json')
+    try:
+        state.update(status='converting-recording',updatedAt=engine.utc())
+        engine.write_json(folder/'job.json',state)
+        source,video=record['folder']/'capture.webm',record['folder']/'video.mp4'
+        if not source.exists() or not source.stat().st_size:
+            raise ValueError('No recording was received. Record the YouTube tab before stopping.')
+        subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-i',str(source),'-an',
+            '-vf','fps=30','-c:v','libx264','-preset','fast','-crf','18','-movflags','+faststart',str(video)],check=True)
+        capture(record['url'],record['character'],record['author'],str(video),record['interval'],
+                recording_start=record['sourceStart'])
+        return read_screenshots(record['jobId'])
+    except Exception as error:
+        state=engine.read_json(folder/'job.json',state)
+        state.update(status='failed',error=str(error),updatedAt=engine.utc())
+        engine.write_json(folder/'job.json',state)
+        raise
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *_):
         pass
@@ -346,7 +433,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send((engine.ROOT/'combo-inputs.js').read_bytes(),mime='text/javascript')
             if path == '/api/status':
                 jobs = [engine.read_json(p) for p in HOME.glob('*/job.json')]
-                return self.send({'busy':BUSY,'error':LAST_ERROR,'jobs':sorted(jobs,key=lambda j:j['updatedAt'],reverse=True),
+                return self.send({'busy':BUSY,'recording':bool(RECORDINGS),'error':LAST_ERROR,'jobs':sorted(jobs,key=lambda j:j['updatedAt'],reverse=True),
                                   'characters':engine.roster(),'model':engine.config()['model']})
             if path.startswith('/api/job/'):
                 folder = folder_for(path.rsplit('/',1)[1])
@@ -371,10 +458,28 @@ class Handler(BaseHTTPRequestHandler):
                 or self.headers.get('Origin') not in (None,f'http://127.0.0.1:{PORT}',f'http://localhost:{PORT}')):
                 return self.send({'error':'Local request token required'},403)
             length = int(self.headers.get('Content-Length',0))
-            if not 0 < length < 100000:
-                raise ValueError('Invalid request size.')
-            body = json.loads(self.rfile.read(length))
             path = urlparse(self.path).path
+            maximum=20000000 if path.startswith('/api/record/chunk/') else 100000
+            if not 0 < length <= maximum:
+                raise ValueError('Invalid request size.')
+            if path.startswith('/api/record/chunk/'):
+                return self.send(append_recording(path.rsplit('/',1)[1],self.rfile.read(length)))
+            body = json.loads(self.rfile.read(length))
+            if path == '/api/record/start':
+                return self.send(start_recording(body))
+            if path in ('/api/record/finish','/api/record/cancel'):
+                record=RECORDINGS.pop(body['session'],None)
+                if not record:
+                    raise ValueError('Unknown recording session.')
+                if path.endswith('/finish'):
+                    start_worker(lambda:finish_recording(record))
+                    return self.send({'processing':True})
+                state=engine.read_json(folder_for(record['jobId'])/'job.json')
+                state.update(status='recording-cancelled',updatedAt=engine.utc())
+                engine.write_json(folder_for(record['jobId'])/'job.json',state)
+                return self.send({'cancelled':True,'partialRecordingKept':True})
+            if RECORDINGS:
+                raise ValueError('Stop recording before starting another operation.')
             if BUSY:
                 raise ValueError('Let the current operation finish before editing or starting another.')
             if path == '/api/capture':

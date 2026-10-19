@@ -6,6 +6,28 @@ The launcher starts local Ollama if needed and opens a console for the screensho
 
 ## 1. Capture screenshots
 
+### Record a YouTube tab and process it automatically
+
+This is the easiest path when YouTube blocks downloads. Open the tool at http://127.0.0.1:18766/ in **Brave, Chrome or Edge**. Recording may be unavailable inside Codex's in-app browser.
+
+1. Open the source YouTube guide in a separate browser tab. Skip ads and pause at the beginning. Use the full-screen video player so the input strip and damage text are large.
+2. In the tool, select the correct creator and character, paste that guide URL, and set the screenshot interval (1 second for denser coverage).
+3. Leave **YouTube start time** at 0 if recording from the beginning. For another starting point, enter its source time in seconds.
+4. Optionally set **Auto-stop after minutes**. Otherwise you will stop the recording once when the guide ends.
+5. Click **Record YouTube tab → screenshots + Ollama** and choose **only the YouTube tab** in the browser's sharing picker.
+6. Play the guide at normal 1× speed. Do not pause, seek or change speed while recording.
+7. At its end click **Stop recording & automatically read screenshots**, or let your timer stop it.
+8. The tool saves the recording, creates screenshots at your chosen interval, and starts local Ollama automatically. No separate Read click is needed. Keep the console open; you do not need to keep Codex open.
+9. Return when the job says **needs-review**. Check and approve as described below.
+
+This path records visible playback and makes no YouTube downloader or cookie request. It supports guide URLs already checked in the app's registry, including RyzingSol's Lee guide `https://www.youtube.com/watch?v=1pwoCyuxZRM`. The user must select the correct tab; a browser cannot silently grant screen capture access.
+
+Recording time starts when capture starts, so lead-in, buffering and ads can shift it from the YouTube clock. All recording timestamps are marked unverified. Correct the exact source combo START time before approving. The optional start-time offset does not automatically correct pauses or lead-in.
+
+Recordings are saved locally under `.local-combo-ai/browser-recordings/`. A cancelled/failed capture retains its partial file. Screenshot approval deletes only the selected screenshot copy, not the recording video. Recording chunks stream to disk, with a 2 GB free-space reserve and an 8 GB limit. The browser timer also stops after 90 minutes at most; close the tool console only when you want its work to stop.
+
+### Local video, direct download, or existing screenshots
+
 Choose **RyzingSol** or **TheFURY**, the character, and the exact creator guide URL. Click **Capture screenshots only**.
 
 For Anna you can use:
@@ -105,4 +127,4 @@ Review and approve through the launcher. After approval, terminal publication is
 .\.local-combo-ai\venv\Scripts\python.exe local-combo-ai/screenshot_workflow.py publish --job 'ryzingsol-IKaAPbrhZxo-anna' --push
 ```
 
-No Ollama scan was started as part of installing this workflow. Tests use temporary synthetic images/video and mocked model responses; they do not claim accurate full-guide transcription.
+No Ollama scan was started as part of installing this workflow. Tests use temporary synthetic images/video and mocked model responses; they do not claim accurate full-guide transcription. The recording test covers WebM chunk saving, FFmpeg conversion, timestamped screenshot extraction and automatic handoff to mocked inference. The actual browser sharing picker still requires your selection.

@@ -122,5 +122,37 @@ class ScreenshotWorkflowTests(unittest.TestCase):
             self.assertTrue(exported[0]['sourceUrl'].endswith('&t=12s'))
             self.assertFalse(any(p.suffix.lower() in ('.jpg','.png','.mp4') for p in engine.job_folder(export_id).rglob('*')))
 
+    def test_browser_recording_automatically_captures_then_reads_without_youtube_download(self):
+        if not engine.shutil.which('ffmpeg'):self.skipTest('FFmpeg unavailable')
+        webm=self.root/'fixture.webm'
+        engine.subprocess.run(['ffmpeg','-hide_banner','-loglevel','error','-y','-f','lavfi',
+            '-i','color=blue:s=640x360:r=30:d=2','-c:v','libvpx-vp9','-deadline','realtime',str(webm)],check=True)
+        value=dict(notation='',damage=None,hits=None,category='situational',conditions=[],
+                   uncertainties=[],kind='other',section='',route_complete=False)
+        with patch.object(engine,'HOME',self.root/'runtime'),patch.object(shots,'RECORDINGS',{}), \
+             patch.object(shots,'BUSY',False),patch.object(engine,'metadata',side_effect=AssertionError('No YouTube fetch')), \
+             patch.object(shots,'transcribe',return_value=value) as transcribe:
+            session=shots.start_recording(dict(url='https://www.youtube.com/watch?v=1pwoCyuxZRM',
+                author='RyzingSol',character='lee',interval=.5,sourceStart=10))
+            data=webm.read_bytes();middle=len(data)//2
+            shots.append_recording(session['session'],data[:middle])
+            shots.append_recording(session['session'],data[middle:])
+            record=shots.RECORDINGS.pop(session['session'])
+            state=shots.finish_recording(record)
+            self.assertEqual(state['status'],'needs-review')
+            self.assertTrue(state['recordingTimingUnverified'])
+            rows=engine.read_json(shots.folder_for(session['jobId'])/'rows.json')
+            self.assertEqual([r['second'] for r in rows],[10,10.5,11,11.5])
+            self.assertTrue(all(not r['approved'] for r in rows))
+            self.assertTrue(all((shots.folder_for(session['jobId'])/'images'/r['image']).exists() for r in rows))
+            self.assertEqual(transcribe.call_count,4)
+
+    def test_recording_rejects_mismatched_creator_and_completed_jobs(self):
+        with patch.object(engine,'HOME',self.root/'runtime'),patch.object(shots,'RECORDINGS',{}),patch.object(shots,'BUSY',False):
+            with self.assertRaises(ValueError):
+                shots.start_recording(dict(url='https://www.youtube.com/watch?v=1pwoCyuxZRM',author='TheFURY',character='lee'))
+            with self.assertRaises(ValueError):
+                shots.start_recording(dict(url='https://www.youtube.com/watch?v=IKaAPbrhZxo',author='RyzingSol',character='anna'))
+
 
 if __name__=='__main__':unittest.main()
