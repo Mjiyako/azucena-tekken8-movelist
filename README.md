@@ -12,6 +12,8 @@ The old six-hour community scraper schedule is disabled. `node tools/update-comb
 
 ## Local video AI
 
+For the manual screenshot-first workflow, double-click **Start Screenshot Combo AI.cmd** and follow [SCREENSHOT-COMBO-AI.md](SCREENSHOT-COMBO-AI.md). It captures images first, lets local Ollama transcribe them on request, and removes each screenshot copy only after you approve its saved text. Approved text corrections become local examples, without retraining model weights.
+
 See [LOCAL-COMBO-AI.md](LOCAL-COMBO-AI.md) for setup, recording, extraction, review and publishing.
 
 1. Double-click **Start Local Combo AI.cmd** in this folder.
