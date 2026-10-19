@@ -1,5 +1,5 @@
 const state = {
-  view: localStorage.getItem("view") || "paired",
+  view: localStorage.getItem("view") || "notation",
   filter: localStorage.getItem("azucena-filter") || "good",
   query: "",
   character: localStorage.getItem("character") || "azucena",
@@ -22,6 +22,27 @@ let openMove = null;
 let MOVE_DATA = [];
 let SCAN_DATA = [];
 let CHARACTERS = [];
+let COMBO_DATA = null;
+let comboLoadError = false;
+let comboSort = 'damage';
+
+const themeToggle = document.querySelector('#themeToggle');
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+  themeToggle.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+  document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#12161c' : '#f6f7f9';
+}
+applyTheme(document.documentElement.dataset.theme || 'light');
+themeToggle.addEventListener('click', () => {
+  const theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(theme);
+  try { localStorage.setItem('tekken-theme', theme); } catch {}
+});
+document.querySelector('#comboSort').addEventListener('change', event => {
+  comboSort = event.target.value;
+  render();
+});
 
 const FILTER_LABELS = {
   all: "ALL MOVES",
@@ -36,7 +57,7 @@ const FILTER_LABELS = {
   lows: "LOWS",
   chlaunch: "CH LAUNCHING",
   heat: "HEAT MOVES",
-  combos: "COMBO",
+  combos: "SEASON 3 COMBOS",
 };
 
 if (!FILTER_LABELS[state.filter]) state.filter = "good";
@@ -537,8 +558,68 @@ function renderComboImages(container, cards) {
   return cards.length;
 }
 
+function characterCombos() {
+  return (COMBO_DATA?.combos || []).filter(combo => combo.character === state.character);
+}
+
 function renderScans() {
-  return renderComboImages(scanGrid, comboCards);
+  scanGrid.replaceChildren();
+  const combos = characterCombos().filter(combo =>
+    [combo.notation, combo.damage, combo.hits, combo.patch, combo.seasonLabel, combo.notes, combo.author, ...combo.conditions]
+      .join(' ').toLowerCase().includes(state.query.toLowerCase()))
+    .sort((a, b) => comboSort === 'hits' ? (a.hits ?? Infinity) - (b.hits ?? Infinity) || b.damage - a.damage : b.damage - a.damage);
+  for (const combo of combos) {
+    const card = document.createElement('article');
+    card.className = 'combo-card';
+    const heading = document.createElement('h3');
+    heading.textContent = `${combo.damage} damage`;
+    const meta = document.createElement('p');
+    meta.className = 'combo-meta';
+    meta.textContent = [combo.hits ? `${combo.hits} hits` : null,
+      combo.patch || combo.seasonLabel, ...combo.conditions].filter(Boolean).join(' · ');
+    const notation = document.createElement('p');
+    notation.className = 'combo-notation';
+    notation.textContent = combo.notation;
+    const source = document.createElement('a');
+    source.href = combo.sourceUrl;
+    source.target = '_blank';
+    source.rel = 'noopener noreferrer';
+    source.textContent = `Source · ${combo.author || 'Tekken 8 Combo'}`;
+    card.append(heading, meta, notation, source);
+    if (combo.notes || combo.damageBasis) {
+      const details = document.createElement('details');
+      details.className = 'combo-source-notes';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Execution & source notes';
+      details.appendChild(summary);
+      for (const text of [combo.notes, combo.damageBasis, combo.seasonEvidence]) {
+        if (!text) continue;
+        const paragraph = document.createElement('p');
+        paragraph.textContent = text;
+        details.appendChild(paragraph);
+      }
+      for (const [url, label] of [[combo.sourceSnapshotUrl, 'Saved wiki revision'], [combo.guideUrl, 'Season 3 video guide']]) {
+        if (!url) continue;
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = label;
+        details.appendChild(link);
+      }
+      card.appendChild(details);
+    }
+    scanGrid.appendChild(card);
+  }
+  if (!combos.length) {
+    const empty = document.createElement('p');
+    empty.className = 'empty-state';
+    empty.textContent = comboLoadError ? 'Combo data could not be loaded. Run the updater and refresh.'
+      : characterCombos().length ? 'No combos match your search.'
+      : 'No verified Season 3 combos for this character in the source collection yet. Run the updater later to check for new entries.';
+    scanGrid.appendChild(empty);
+  }
+  return combos.length;
 }
 
 function renderImageMoves() {
@@ -550,13 +631,22 @@ function render() {
   openMove = null;
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.view === state.view);
+    button.setAttribute("aria-pressed", String(button.dataset.view === state.view));
   });
   document.querySelectorAll("[data-filter]").forEach((button) => {
     button.classList.toggle("active", button.dataset.filter === state.filter);
   });
 
   const moves = MOVE_DATA.filter(matchesFilter).filter(matchesQuery);
-  linkedCount.textContent = comboCards.length;
+  linkedCount.textContent = characterCombos().length;
+  document.querySelector('#comboControls').hidden = state.view !== 'scans';
+  document.querySelector('.filter-row').hidden = state.view === 'scans';
+  searchInput.setAttribute('aria-label', state.view === 'scans' ? 'Search combos' : 'Search moves');
+  searchInput.placeholder = state.view === 'scans' ? 'Search combo, damage, Heat, Wall…' : 'Search command, name, frames…';
+  const updated = COMBO_DATA ? new Date(COMBO_DATA.updatedAt).toLocaleDateString() : '';
+  document.querySelector('#comboStatus').textContent = COMBO_DATA
+    ? `Season 3 · Updated ${updated} · Damage as reported by the source; conditions affect results.`
+    : 'Season 3 combo data unavailable.';
   sectionTitle.textContent = state.view === "scans"
     ? FILTER_LABELS.combos
     : FILTER_LABELS[state.filter] || FILTER_LABELS.all;
@@ -566,9 +656,8 @@ function render() {
   scanGrid.hidden = state.view !== "scans";
 
   if (state.view === "scans") {
-    renderScans();
+    visibleCount.textContent = renderScans();
     imageMovesList.innerHTML = "";
-    visibleCount.textContent = comboCards.length;
     return;
   }
 
@@ -749,7 +838,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=16");
+  navigator.serviceWorker.register("service-worker.js?v=19");
 }
 
 function updateGoodFilterAvailability() {
@@ -758,7 +847,7 @@ function updateGoodFilterAvailability() {
 }
 
 function updateHeaderTitle() {
-  if (headerHeading) headerHeading.textContent = state.characterName || "Azucena";
+  if (headerHeading) headerHeading.textContent = "Tekken Book";
   document.title = `${state.characterName || "Azucena"} — Tekken 8 Movelist`;
 }
 
@@ -775,7 +864,9 @@ function populateCharacterSelect() {
   characterSelect.value = state.character;
 }
 
+let characterRequest = 0;
 async function switchCharacter(id, options = {}) {
+  const request = ++characterRequest;
   const fallback = CHARACTERS.find((character) => character.id === "azucena");
   const requested = CHARACTERS.find((character) => character.id === id && character.available);
   const target = requested || fallback || { id: "azucena", name: "Azucena" };
@@ -784,6 +875,7 @@ async function switchCharacter(id, options = {}) {
     const response = await fetch(`data/${target.id}.json`);
     if (!response.ok) throw new Error(`Failed to load data/${target.id}.json`);
     const data = await response.json();
+    if (request !== characterRequest) return;
 
     MOVE_DATA = Array.isArray(data.moves) ? data.moves : [];
     SCAN_DATA = [];
@@ -804,6 +896,7 @@ async function switchCharacter(id, options = {}) {
     }
     render();
   } catch (error) {
+    if (request !== characterRequest) return;
     console.error("Could not load character data", target.id, error);
     if (target.id !== "azucena") {
       await switchCharacter("azucena", { skipSave: true });
@@ -818,6 +911,12 @@ if (characterSelect) {
 }
 
 async function init() {
+  try {
+    const response = await fetch('data/combos-season3.json');
+    if (!response.ok) throw new Error('Combo data unavailable');
+    COMBO_DATA = await response.json();
+  } catch (error) { comboLoadError = true; console.error(error); }
+
   try {
     const response = await fetch("data/characters.json");
     CHARACTERS = await response.json();

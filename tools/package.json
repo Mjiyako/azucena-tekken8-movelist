@@ -1,0 +1,1 @@
+{"private":true,"type":"module","scripts":{"update":"node update-combos.mjs","test":"node --test update-combos.test.mjs"},"dependencies":{"cheerio":"1.2.0"}}

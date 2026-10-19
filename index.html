@@ -4,20 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#121826" />
-    <meta name="description" content="Azucena Tekken 8 mobile movelist with generated input images, notation, and frame data." />
+    <meta name="description" content="Tekken Book: character moves, frame data, and Season 3 combos with damage." />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=14" />
-    <title>Azucena Book</title>
+    <link rel="stylesheet" href="styles.css?v=19" />
+    <title>Tekken Book</title>
+    <script>
+      try { document.documentElement.dataset.theme = localStorage.getItem('tekken-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+      catch { document.documentElement.dataset.theme = 'light'; }
+    </script>
   </head>
   <body>
     <header class="app-header">
       <div>
         <p class="eyebrow">Tekken 8</p>
-        <h1>Azucena Book</h1>
+        <h1>Tekken Book</h1>
       </div>
-      <button class="icon-button" id="installButton" type="button" aria-label="Install app" title="Install app">
+      <div class="header-actions">
+      <button id="themeToggle" type="button" class="theme-toggle" aria-label="Switch color theme">Dark mode</button>
+      <button class="icon-button" id="installButton" hidden type="button" aria-label="Install app" title="Install app">
         <span aria-hidden="true">+</span>
       </button>
+      </div>
     </header>
 
     <main>
@@ -27,9 +34,9 @@
           <select id="characterSelect" aria-label="Select character"></select>
         </label>
 
-        <div class="segmented" role="tablist" aria-label="View mode">
-          <button class="segment active" type="button" data-view="paired">Paired</button>
-          <button class="segment" type="button" data-view="notation">Notation</button>
+        <div class="segmented" role="group" aria-label="View mode">
+          <button class="segment active" type="button" data-view="paired">Inputs</button>
+          <button class="segment" type="button" data-view="notation">Moves</button>
           <button class="segment" type="button" data-view="scans">Combos</button>
         </div>
 
@@ -49,6 +56,7 @@
           <button class="filter" type="button" data-filter="plus">PLUS ON BLOCK</button>
           <button class="filter active" type="button" data-filter="good">GOOD MOVES</button>
           <button class="filter" type="button" data-filter="fast">FAST MOVES</button>
+          <details class="more-filters"><summary>More filters</summary><div class="extra-filters">
           <button class="filter" type="button" data-filter="evasive">EVASIVE</button>
           <button class="filter" type="button" data-filter="tracking">TRACKING</button>
           <button class="filter" type="button" data-filter="delayable">DELAYABLE</button>
@@ -56,10 +64,12 @@
           <button class="filter" type="button" data-filter="lows">LOWS</button>
           <button class="filter" type="button" data-filter="chlaunch">CH LAUNCHING</button>
           <button class="filter" type="button" data-filter="heat">HEAT MOVES</button>
-          <button class="filter" type="button" data-filter="combos">COMBO</button>
+          </div></details>
         </div>
       </section>
 
+      <details class="reference-help">
+        <summary>Notation &amp; frame data guide</summary>
       <section class="legend" aria-label="Notation support">
         <span><b>1</b> LP</span>
         <span><b>2</b> RP</span>
@@ -102,12 +112,18 @@
         <span><b>BT</b> puts opponent back turned</span>
       </section>
 
+      </details>
+
       <section class="stats-strip" aria-label="Move counts">
         <div><strong id="visibleCount">0</strong><span>shown</span></div>
-        <div><strong id="linkedCount">0</strong><span>combo images</span></div>
+        <div><strong id="linkedCount">0</strong><span>Season 3 combos</span></div>
         <div><strong>3.02.01</strong><span>source patch</span></div>
       </section>
 
+      <div id="comboControls" class="combo-controls" hidden>
+        <label>Sort combos <select id="comboSort"><option value="damage">Highest damage</option><option value="hits">Fewest hits</option></select></label>
+        <p id="comboStatus" role="status"></p>
+      </div>
       <h2 id="sectionTitle" class="section-heading">GOOD MOVES</h2>
       <section id="movesList" class="moves-list" aria-live="polite"></section>
       <section id="imageMovesList" class="image-moves-list" aria-live="polite"></section>
@@ -149,6 +165,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.8/jspdf.plugin.autotable.min.js"></script>
-    <script src="app.js?v=16"></script>
+    <script src="app.js?v=19"></script>
   </body>
 </html>

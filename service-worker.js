@@ -1,4 +1,4 @@
-const CACHE = "azucena-t8-movelist-v17";
+const CACHE = "azucena-t8-movelist-v19";
 const CORE = [
   "./",
   "./index.html",
@@ -6,6 +6,7 @@ const CORE = [
   "./app.js",
   "./manifest.webmanifest",
   "./data/characters.json",
+  "./data/combos-season3.json",
   "./data/azucena.json",
   "./data/alisa.json",
   "./data/anna.json",
@@ -55,7 +56,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key.startsWith("azucena-t8-movelist-") && key !== CACHE).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -65,6 +66,7 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
+        if (!response.ok) return response;
         const copy = response.clone();
         caches.open(CACHE).then((cache) => cache.put(event.request, copy));
         return response;

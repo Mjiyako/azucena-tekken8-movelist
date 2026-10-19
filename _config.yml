@@ -1,0 +1,6 @@
+# GitHub Pages builds the static app from main. Local development tools stay in Git.
+exclude:
+  - tools
+  - neonfighters-scraper
+  - Start Tekken Book.cmd
+  - Update Combos.cmd

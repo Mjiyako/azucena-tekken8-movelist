@@ -1,0 +1,4 @@
+node_modules/
+*.bak
+*.tmp
+.tmp_tekken/
