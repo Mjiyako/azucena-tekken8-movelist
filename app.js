@@ -838,7 +838,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=19");
+  navigator.serviceWorker.register("service-worker.js?v=20");
 }
 
 function updateGoodFilterAvailability() {
@@ -847,8 +847,8 @@ function updateGoodFilterAvailability() {
 }
 
 function updateHeaderTitle() {
-  if (headerHeading) headerHeading.textContent = "Tekken Book";
-  document.title = `${state.characterName || "Azucena"} — Tekken 8 Movelist`;
+  if (headerHeading) headerHeading.textContent = "Mji's Tek Info";
+  document.title = "Mji's Tek Info";
 }
 
 function populateCharacterSelect() {
