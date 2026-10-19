@@ -2,6 +2,22 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import inputs from '../combo-inputs.js';
 
+test('chapter categories retain reviewed mini-combos and infer community conditions', () => {
+  assert.equal(inputs.category({ notation: 'CH df+2' }), 'counter');
+  assert.equal(inputs.category({ conditions: ['Heat'] }), 'heat');
+  assert.equal(inputs.category({ conditions: ['Wall break'] }), 'wall-carry');
+  assert.equal(inputs.category({ category: 'follow-up', conditions: ['Counter hit'] }), 'follow-up');
+  assert.equal(inputs.category({ notation: 'df+2' }), 'normal');
+});
+
+test('video links require an independently recorded timestamp and use that start time', () => {
+  const combo = { sourceUrl: 'https://www.youtube.com/watch?v=IKaAPbrhZxo&t=1s' };
+  assert.equal(inputs.timestampUrl(combo), null);
+  assert.equal(inputs.timestampUrl({ ...combo, videoTimestampSeconds: 265 }), 'https://www.youtube.com/watch?v=IKaAPbrhZxo&t=265s');
+  assert.equal(inputs.timestampUrl({ sourceUrl: 'https://example.com/watch?v=IKaAPbrhZxo', videoTimestampSeconds: 265 }), null);
+  assert.equal(inputs.formatTime(265), '4:25');
+});
+
 test('diagonal inputs are a single arrow and simultaneous buttons stay together', () => {
   const tokens = inputs.parse('d/f,1+2 ► D/B*,4');
   assert.deepEqual(tokens.filter(t => t.kind === 'direction').map(t => [t.raw, t.held]), [['df', false], ['DB', true]]);

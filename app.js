@@ -26,6 +26,11 @@ let COMBO_DATA = null;
 let COMBO_GUIDES = {};
 let comboLoadError = false;
 let comboSort = 'damage';
+let comboCreator = 'all';
+document.querySelector('#comboCreator').addEventListener('change', event => {
+  comboCreator = event.target.value;
+  render();
+});
 
 const themeToggle = document.querySelector('#themeToggle');
 function applyTheme(theme) {
@@ -604,14 +609,41 @@ function renderComboGuides() {
 
 function renderScans() {
   scanGrid.replaceChildren();
-  const combos = characterCombos().filter(combo =>
+  const combos = characterCombos().filter(combo => comboCreator === 'all' || combo.author === comboCreator).filter(combo =>
     [combo.notation, combo.damage, combo.hits, combo.patch, combo.seasonLabel, combo.notes, combo.author, ...combo.conditions]
       .join(' ').toLowerCase().includes(state.query.toLowerCase()))
     .sort((a, b) => comboSort === 'hits' ? (a.hits ?? Infinity) - (b.hits ?? Infinity) || b.damage - a.damage : b.damage - a.damage);
+  const allVideoRoutes = characterCombos().filter(combo => TekkenComboInputs.timestampUrl(combo));
+  document.querySelector('#creatorCoverage').textContent =
+    `Timestamped video routes: RyzingSol ${allVideoRoutes.filter(combo => combo.author === 'RyzingSol').length} · TheFURY ${allVideoRoutes.filter(combo => combo.author === 'TheFURY').length}. Full guide coverage is still being reviewed; other entries retain their original sources.`;
+  const groups = new Map();
+  const navigation = document.createElement('nav');
+  navigation.className = 'combo-section-nav';
+  navigation.setAttribute('aria-label', 'Combo sections');
+  for (const [id, label] of TekkenComboInputs.sections) {
+    const count = combos.filter(combo => TekkenComboInputs.category(combo) === id).length;
+    if (!count) continue;
+    const section = document.createElement('section');
+    section.className = 'combo-section';
+    section.id = `combos-${id}`;
+    const title = document.createElement('h3');
+    title.className = 'combo-section-title';
+    title.textContent = `${label} (${count})`;
+    const cards = document.createElement('div');
+    cards.className = 'combo-section-cards';
+    section.append(title, cards);
+    groups.set(id, { section, cards });
+    const jump = document.createElement('a');
+    jump.href = `#combos-${id}`;
+    jump.textContent = label;
+    navigation.appendChild(jump);
+  }
+  if (combos.length) scanGrid.appendChild(navigation);
+  for (const { section } of groups.values()) scanGrid.appendChild(section);
   for (const combo of combos) {
     const card = document.createElement('article');
     card.className = 'combo-card';
-    const heading = document.createElement('h3');
+    const heading = document.createElement('h4');
     heading.textContent = `${combo.damage} damage`;
     const meta = document.createElement('p');
     meta.className = 'combo-meta';
@@ -621,10 +653,14 @@ function renderScans() {
     notation.className = 'combo-notation';
     notation.textContent = combo.notation;
     const source = document.createElement('a');
-    source.href = combo.sourceUrl;
+    const timestamped = TekkenComboInputs.timestampUrl(combo);
+    source.href = timestamped || combo.sourceUrl;
     source.target = '_blank';
     source.rel = 'noopener noreferrer';
-    source.textContent = `Source · ${combo.author || 'Tekken 8 Combo'}`;
+    source.className = timestamped ? 'combo-video-link' : 'combo-source-link';
+    source.textContent = timestamped
+      ? `▶ ${combo.author} · Watch at ${TekkenComboInputs.formatTime(combo.videoTimestampSeconds)}`
+      : `Source · ${combo.author || 'Tekken 8 Combo'}`;
     const textVersion = document.createElement('details');
     textVersion.className = 'combo-text-version';
     const textSummary = document.createElement('summary');
@@ -654,13 +690,13 @@ function renderScans() {
       }
       card.appendChild(details);
     }
-    scanGrid.appendChild(card);
+    groups.get(TekkenComboInputs.category(combo)).cards.appendChild(card);
   }
   if (!combos.length) {
     const empty = document.createElement('p');
     empty.className = 'empty-state';
     empty.textContent = comboLoadError ? 'Combo data could not be loaded. Run the updater and refresh.'
-      : characterCombos().length ? 'No combos match your search.'
+      : characterCombos().length ? 'No verified combos match this creator or search yet. The full video guides are linked above.'
       : 'No verified Season 3 combos for this character in the source collection yet. Run the updater later to check for new entries.';
     scanGrid.appendChild(empty);
   }
@@ -884,7 +920,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=21");
+  navigator.serviceWorker.register("service-worker.js?v=22");
 }
 
 function updateGoodFilterAvailability() {

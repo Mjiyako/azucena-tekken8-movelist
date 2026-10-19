@@ -5,7 +5,7 @@
   "updatedAt": "2026-10-19T06:51:13.581Z",
   "pageCount": 21,
   "primaryCount": 206,
-  "supplementalCount": 14,
+  "supplementalCount": 15,
   "sources": [
     "https://tekken8combo.kagewebsite.com/selection-season-3-combo/",
     "https://www.youtube.com/watch?v=HKGx3Syazxw&t=12s",
@@ -15,7 +15,8 @@
     "https://wavu.wiki/t/Leo_combos#Staples",
     "https://wavu.wiki/t/Leroy_combos#Staples",
     "https://wavu.wiki/t/Nina_combos#Staples",
-    "https://wavu.wiki/t/Shaheen_combos#Staples"
+    "https://wavu.wiki/t/Shaheen_combos#Staples",
+    "https://www.youtube.com/watch?v=IKaAPbrhZxo"
   ],
   "combos": [
     {
@@ -102,7 +103,9 @@
       "verifiedAt": "2026-10-19",
       "seasonEvidence": "Video is explicitly titled ANNA WILLIAMS Optimal Combo Guide - Season 3 | TEKKEN 8. Notation and final damage counter read from the video.",
       "damageBasis": "Final on-screen combo counter, including the df+2 launcher.",
-      "notes": "Staple route. Final counter: 11 hits, 75 damage at about 0:27. (TOM.3) is a whiffed stance transition; do not count it as a hit. CJM = Chaos Judgment."
+      "notes": "Staple route. Final counter: 11 hits, 75 damage at about 0:27. (TOM.3) is a whiffed stance transition; do not count it as a hit. CJM = Chaos Judgment.",
+      "category": "normal",
+      "videoTimestampSeconds": 20
     },
     {
       "id": "reference-anna-beginner",
@@ -120,7 +123,9 @@
       "verifiedAt": "2026-10-19",
       "seasonEvidence": "Video is explicitly titled ANNA WILLIAMS Optimal Combo Guide - Season 3 | TEKKEN 8. Notation and final damage counter read from the video.",
       "damageBasis": "Final on-screen combo counter, including the df+2 launcher.",
-      "notes": "Beginner route. Final counter: 9 hits, 63 damage at about 0:19. HAM = Hammer Chance; TOM = Pleasure Time. Alternative ender shown in the video is not included in this damage total."
+      "notes": "Beginner route. Final counter: 9 hits, 63 damage at about 0:19. HAM = Hammer Chance; TOM = Pleasure Time. Alternative ender shown in the video is not included in this damage total.",
+      "category": "normal",
+      "videoTimestampSeconds": 12
     },
     {
       "id": "reference-armor-king-dark-upper",
@@ -3116,6 +3121,28 @@
       "conditions": [],
       "author": "LilaCauliflower",
       "sourceUrl": "https://tekken8combo.kagewebsite.com/combo/2461"
+    },
+    {
+      "id": "reference-anna-ryzingsol-ch-db2",
+      "character": "anna",
+      "characterName": "Anna Williams",
+      "season": 3,
+      "notation": "CH db+2 ► TOM.2",
+      "damage": 44,
+      "hits": 2,
+      "patch": null,
+      "seasonLabel": "Season 3 video · patch unspecified",
+      "category": "follow-up",
+      "conditions": [
+        "Counter hit"
+      ],
+      "author": "RyzingSol",
+      "sourceUrl": "https://www.youtube.com/watch?v=IKaAPbrhZxo&t=265s",
+      "videoTimestampSeconds": 265,
+      "verifiedAt": "2026-10-19",
+      "seasonEvidence": "Verified RyzingSol Anna Season 3 guide; Guaranteed Follow-ups chapter. Visual notation and completed route counter checked.",
+      "damageBasis": "Final on-screen two-hit combo counter: 44 total damage, including counter-hit db+2.",
+      "notes": "TOM = Pleasure Time. One individually reviewed route; the full guide has not yet been imported."
     }
   ],
   "coverage": [
@@ -3132,7 +3159,7 @@
     {
       "id": "anna",
       "name": "Anna Williams",
-      "count": 2
+      "count": 3
     },
     {
       "id": "armor-king",

@@ -90,7 +90,7 @@ Wait for **Refresh combos and deploy Pages** to succeed in Actions, then reload 
 
 ## Sources and coverage — 19 October 2026
 
-All **41 of 41 app characters** now have combo entries. The dataset contains 206 primary source records plus 14 curated supplemental records; 215 of these records belong to the app roster and five Miary Zo records are retained outside that roster.
+All **41 of 41 app characters** now have combo entries. The dataset contains 206 primary source records plus 15 curated supplemental records; 216 of these records belong to the app roster and five Miary Zo records are retained outside that roster.
 
 Primary source: [Tekken 8 Combo Season 3 collection](https://tekken8combo.kagewebsite.com/selection-season-3-combo/).
 
@@ -104,7 +104,7 @@ Damage depends on the listed route, Heat, counter hits, walls, stage conditions,
 
 ## Validation
 
-Ten tests pass, including character alias mapping, no-op detection, preservation/validation of supplemental records, and visual input parsing. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
+Thirteen tests pass, including character alias mapping, no-op detection, preservation/validation of supplemental records, and visual input parsing. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
 
 ## Combo video guides
 
@@ -115,3 +115,7 @@ The linked guide does not imply that every combo card was created by that creato
 ## Weekly creator reviews
 
 See [CREATOR-REVIEWS.md](CREATOR-REVIEWS.md). The weekly AI review is scheduled in Codex; GitHub performs publication and continues its independent six-hour collection refresh. Keep the local computer and desktop app running for the video review. Existing entries are retained whenever a newer video cannot be fully verified.
+
+## Categorized video routes
+
+The Combos tab groups routes in RyzingSol chapter order and offers an All / RyzingSol / TheFURY filter. Reviewed video cards show a direct start-time link beside visual inputs and damage. Anna currently has one individually checked RyzingSol follow-up (44 damage at 4:25) and two checked TheFURY normal-hit routes. This is not the complete output of either guide. `data/creator-review-progress.json` tracks the existing-guide backlog; the weekly review now backfills it and selects future videos independently for each creator.

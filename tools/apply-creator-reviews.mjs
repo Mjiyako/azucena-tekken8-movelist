@@ -1,7 +1,7 @@
 import { readFile, writeFile, rename } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { applyCreatorOverrides } from './creator-overrides.mjs';
+import { applyCreatorOverrides, creatorReviews } from './creator-overrides.mjs';
 import { hasDatasetChanged } from './update-combos.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -13,7 +13,7 @@ const combos = applyCreatorOverrides(previous.combos, overrides, roster);
 const coverage = roster.map(character => ({ id: character.id, name: character.name,
   count: combos.filter(combo => combo.character === character.id).length }));
 const next = { ...previous, updatedAt: new Date().toISOString(),
-  sources: [...new Set([...previous.sources, ...Object.values(overrides.characters).map(review => review.videoUrl)])], combos, coverage };
+  sources: [...new Set([...previous.sources, ...creatorReviews(overrides).map(([, review]) => review.videoUrl)])], combos, coverage };
 if (hasDatasetChanged(previous, next)) {
   const file = path.join(root, 'data/combos-season3.json');
   await writeFile(`${file}.bak`, JSON.stringify(previous, null, 2) + '\n');

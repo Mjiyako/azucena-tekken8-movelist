@@ -28,6 +28,33 @@
     }
     return tokens;
   }
-  root.TekkenComboInputs = { parse };
-  if (typeof module !== 'undefined') module.exports = { parse };
+  const sections = [
+    ['normal', 'Normal Hit Combos'], ['counter', 'Counter Hit Combos'],
+    ['heat', 'Heat Mode — Burst & Dash'], ['follow-up', 'Guaranteed Follow-ups'],
+    ['wall', 'At the Wall — Stun & Tornado'], ['wall-carry', 'Wall Carry & Stage Hazards'],
+    ['situational', 'Situational Combos'],
+  ];
+  function category(combo) {
+    if (sections.some(([id]) => id === combo.category)) return combo.category;
+    const conditions = (combo.conditions || []).join(' ');
+    if (/wall|floor|balcony|stage\s*:/i.test(conditions)) return 'wall-carry';
+    if (/heat/i.test(conditions)) return 'heat';
+    if (/counter hit/i.test(conditions) || /^CH\b/i.test(combo.notation || '')) return 'counter';
+    return 'normal';
+  }
+  function timestampUrl(combo) {
+    if (!Number.isFinite(combo.videoTimestampSeconds) || combo.videoTimestampSeconds < 0) return null;
+    try {
+      const url = new URL(combo.sourceUrl);
+      if (url.protocol !== 'https:' || !['www.youtube.com', 'youtube.com'].includes(url.hostname)
+        || url.pathname !== '/watch' || !/^[A-Za-z0-9_-]{11}$/.test(url.searchParams.get('v') || '')) return null;
+      url.searchParams.set('t', `${Math.floor(combo.videoTimestampSeconds)}s`);
+      return url.href;
+    } catch { return null; }
+  }
+  function formatTime(seconds) {
+    return `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+  }
+  root.TekkenComboInputs = { parse, sections, category, timestampUrl, formatTime };
+  if (typeof module !== 'undefined') module.exports = root.TekkenComboInputs;
 })(globalThis);

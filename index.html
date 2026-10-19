@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#121826" />
     <meta name="description" content="Mji's Tek Info: character moves, frame data, and Season 3 combos with damage." />
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=21" />
+    <link rel="stylesheet" href="styles.css?v=22" />
     <title>Mji's Tek Info</title>
     <script>
       try { document.documentElement.dataset.theme = localStorage.getItem('tekken-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
@@ -122,7 +122,9 @@
 
       <div id="comboControls" class="combo-controls" hidden>
         <label>Sort combos <select id="comboSort"><option value="damage">Highest damage</option><option value="hits">Fewest hits</option></select></label>
+        <label>Creator <select id="comboCreator"><option value="all">All sources</option><option value="RyzingSol">RyzingSol</option><option value="TheFURY">TheFURY</option></select></label>
         <p id="comboStatus" role="status"></p>
+        <p id="creatorCoverage" class="creator-coverage" role="status"></p>
         <nav id="comboGuides" class="combo-guides" aria-label="Character combo video guides" hidden></nav>
         <p class="combo-picture-key">Buttons: 1 left punch · 2 right punch · 3 left kick · 4 right kick. Arrows show directions. HOLD = keep pressed; parentheses keep the source’s whiff/optional notation.</p>
       </div>
@@ -167,7 +169,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/5.0.8/jspdf.plugin.autotable.min.js"></script>
-    <script src="combo-inputs.js?v=21"></script>
-    <script src="app.js?v=21"></script>
+    <script src="combo-inputs.js?v=22"></script>
+    <script src="app.js?v=22"></script>
   </body>
 </html>

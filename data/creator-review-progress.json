@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "season": 3,
+  "updatedAt": "2026-10-19",
+  "complete": false,
+  "notes": "Guide registry is a discovery queue, not proof of full extraction. Individually verified supplemental routes can be published without marking a whole guide complete.",
+  "videos": [
+    {
+      "character": "azucena",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=Wzg_mPYCvFE",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "alisa",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=A51M5wxLOiI",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "armor-king",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=Oogc_SUmFjo",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "armor-king",
+      "author": "TheFURY",
+      "videoUrl": "https://www.youtube.com/watch?v=-pcYbpZRqaE",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "asuka",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=EPeqqn4QPqs",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "bryan",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=t1zIuYLcjVE",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "bryan",
+      "author": "TheFURY",
+      "videoUrl": "https://www.youtube.com/watch?v=lpVJ6Plxi_A",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "claudio",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=3tqdHjcWUnE",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "clive",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=y9a4nq-m4nw",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "devil-jin",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=jrtsBvNjYmk",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "eddy",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=3giF9GPmHQs",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "fahkumram",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=j-KckCppYz8",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "fahkumram",
+      "author": "TheFURY",
+      "videoUrl": "https://www.youtube.com/watch?v=6lJjf_BrrnM",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "feng",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=TBk8s7dcRGY",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "feng",
+      "author": "TheFURY",
+      "videoUrl": "https://www.youtube.com/watch?v=g4Jv_mo6pj8",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "heihachi",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=bakVBHqOg2g",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "hwoarang",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=sr5x_7onq84",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "jack-8",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=UrVZ0A4_YLc",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "jin-kazama",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=2NXRwdDEfkg",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "jun",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=hgcYdKwunEw",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "kazuya",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=lcR2xrTmPqQ",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "king",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=XVqeD_8wadc",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "kuma",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=H4_27uQFHWg",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "lars",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=gczHYUpuqCU",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "lee",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=1pwoCyuxZRM",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "leo",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=udvAa3o_MCc",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "leroy",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=0eKO_2O-BaQ",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "lidia",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=mxoXJJDPTCo",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "lili",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=tJrPIcIBv1M",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "xiaoyu",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=uHgLbpdH-OY",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "law",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=cVSLwAh1FAw",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "nina",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=dtO5RgN1Y80",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "panda",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=H4_27uQFHWg",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "paul",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=s8nD1GWBLW0",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "raven",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=kOFww_gdayM",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "reina",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=-xmNLCL6UZ8",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "dragunov",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=NS1qOGeP0J8",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "shaheen",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=yHeSPqlRRsI",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "steve",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=rEV_OBvENoI",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "victor",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=cYCZWV95zKg",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "yoshimitsu",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=WJNuY6M2WwI",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "zafina",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=B9WAC93KE7g",
+      "status": "pending",
+      "complete": false,
+      "verifiedRouteIds": []
+    },
+    {
+      "character": "anna",
+      "author": "RyzingSol",
+      "videoUrl": "https://www.youtube.com/watch?v=IKaAPbrhZxo",
+      "status": "partial",
+      "complete": false,
+      "verifiedRouteIds": [
+        "reference-anna-ryzingsol-ch-db2"
+      ]
+    },
+    {
+      "character": "anna",
+      "author": "TheFURY",
+      "videoUrl": "https://www.youtube.com/watch?v=HKGx3Syazxw",
+      "status": "partial",
+      "complete": false,
+      "verifiedRouteIds": [
+        "reference-anna-beginner",
+        "reference-anna-staple"
+      ]
+    }
+  ]
+}
