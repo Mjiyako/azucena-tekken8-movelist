@@ -48,7 +48,7 @@ Default: decode at 2 fps and run local OCR over current combo counters. Counter 
 - Raw observations retain title/section reads. Candidates retain notation, counters, setup, sampled timestamps and supporting frames. Counter resets separate repeated demonstrations.
 - A repeated reading is evidence, not approval or a calibrated confidence score. See all saved readings/title observations in each job. **Add a missed route at current video time** lets you record a route the automatic pass missed.
 
-Settings: `local-combo-ai/config.json`. Supported local models: `qwen3-vl:2b-instruct` (lighter), `qwen3-vl:4b-instruct` (larger), `qwen3-vl:8b-instruct` (very demanding here). Edit `model` and rerun setup to download the chosen model. Cloud tags are rejected. The default is 2B Instruct. Explicit -instruct tags avoid the thinking-parser issue encountered in the initial tests. Larger Instruct models are optional downloads.
+Settings: `local-combo-ai/config.json`. Supported local models: `qwen3-vl:2b-instruct` (lighter), `qwen3-vl:4b-instruct` (larger), `qwen3-vl:8b-instruct` (very demanding here). Edit `model` and rerun setup to download the chosen model. Cloud tags are rejected. The default is 4B Instruct, selected for local extraction despite its longer processing time. Explicit -instruct tags avoid the thinking-parser issue encountered in the initial tests. Other Instruct models are optional downloads.
 
 CLI examples from the repository:
 

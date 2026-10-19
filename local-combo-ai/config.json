@@ -1,5 +1,5 @@
 {
-  "model": "qwen3-vl:2b-instruct",
+  "model": "qwen3-vl:4b-instruct",
   "sampleFps": 2,
   "keyframeSeconds": 3,
   "maxVideoMinutes": 90,
