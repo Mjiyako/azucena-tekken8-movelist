@@ -32,9 +32,9 @@ SCHEMA = {'type': 'object', 'properties': {
     'section': {'type': 'string'}, 'notation': {'type': ['string', 'null']},
     'damage': {'type': ['integer', 'null']}, 'hits': {'type': ['integer', 'null']},
     'category': {'type': 'string', 'enum': CATEGORIES},
-    'conditions': {'type': 'array', 'items': {'type': 'string'}},
+    'conditions': {'type': 'array', 'maxItems': 6, 'items': {'type': 'string', 'maxLength': 180}},
     'route_complete': {'type': 'boolean'}, 'legible': {'type': 'boolean'},
-    'uncertainties': {'type': 'array', 'items': {'type': 'string'}}
+    'uncertainties': {'type': 'array', 'maxItems': 4, 'items': {'type': 'string', 'maxLength': 180}}
 }, 'required': ['kind', 'title', 'character', 'section', 'notation', 'damage', 'hits',
                 'category', 'conditions', 'route_complete', 'legible', 'uncertainties'],
     'additionalProperties': False}
@@ -174,6 +174,40 @@ def image_b64(image):
     return base64.b64encode(buffer.getvalue()).decode('ascii')
 
 
+def generate_reading(payload):
+    """Retry malformed model output without turning it into factual combo data."""
+    failures = []
+    for attempt in range(2):
+        request = dict(payload)
+        if attempt:
+            request['prompt'] += '\nPrevious output was invalid. Keep JSON concise. Use at most four short, distinct uncertainties; do not repeat sentences. Use null for unreadable fields.'
+        answer = api('/api/generate', request)
+        write_json(HOME / 'last-model-response.json', answer)
+        try:
+            if not isinstance(answer.get('response'), str):
+                raise ValueError('Missing model response text')
+            value = json.loads(answer.get('response', ''))
+            if not isinstance(value, dict) or any(key not in value for key in SCHEMA['required']):
+                raise ValueError('Missing required frame-reading fields')
+            if (value['kind'] not in ('combo', 'title', 'other')
+                or value['category'] not in CATEGORIES
+                or any(not isinstance(value[key], str) for key in ('title', 'character', 'section'))
+                or value['notation'] is not None and not isinstance(value['notation'], str)
+                or any(not isinstance(value[key], list) or not all(isinstance(v, str) for v in value[key])
+                       for key in ('conditions', 'uncertainties'))):
+                raise ValueError('Invalid frame-reading field types')
+            return value, answer
+        except (json.JSONDecodeError, ValueError) as error:
+            failures.append({'attempt': attempt+1, 'error': str(error), 'response': answer})
+    digest = hashlib.sha256(json.dumps(payload).encode()).hexdigest()[:24]
+    write_json(HOME / 'inference-errors' / f'{digest}.json', failures)
+    return {'kind': 'other', 'title': '', 'character': '', 'section': '',
+            'notation': None, 'damage': None, 'hits': None, 'category': 'situational',
+            'conditions': [], 'route_complete': False, 'legible': False,
+            'modelReadFailed': True,
+            'uncertainties': ['Local model returned invalid JSON twice. Inspect this frame manually; any visual symbol draft is incomplete.']}, answer
+
+
 def infer(frame, character, chapter, model=None, counter_reading=None, author='RyzingSol'):
     symbol_reading = symbols.read(frame, author)
     with Image.open(frame) as image:
@@ -190,11 +224,7 @@ def infer(frame, character, chapter, model=None, counter_reading=None, author='R
             'images': [image_b64(image), image_b64(notation), image_b64(counter)],
             'format': SCHEMA, 'keep_alive': '15m',
             'options': {'temperature': 0, 'seed': 42, 'num_ctx': 8192, 'num_predict': 900}}
-    answer = api('/api/generate', payload)
-    write_json(HOME / 'last-model-response.json', answer)
-    if not answer.get('response', '').strip():
-        raise RuntimeError('Local model returned no JSON. Use an explicit -instruct model; see .local-combo-ai/last-model-response.json.')
-    value = json.loads(answer['response'])
+    value, answer = generate_reading(payload)
     value['symbolReading'] = symbol_reading
     value['modelNotation'] = value.get('notation')
     if symbol_reading.get('suggestion'):
@@ -328,7 +358,7 @@ def scan_counters(frames, fps, folder, notify=print, stop=None):
     for index, frame in enumerate(frames):
         if stop and stop.is_set():
             raise InterruptedError('Counter scan paused. Rerun to resume its cached readings.')
-        digest = hashlib.sha256(frame.read_bytes() + b'tesseract-counters-v1').hexdigest()[:24]
+        digest = hashlib.sha256(frame.read_bytes() + b'tesseract-counters-v2').hexdigest()[:24]
         file = cache / f'{digest}.json'
         reading = read_json(file)
         if reading is None:
@@ -419,7 +449,7 @@ def process(url, character, author, local_file=None, every_frame=False, dense=Fa
             progress('paused')
             raise InterruptedError('Paused; rerun this source to resume cached observations.')
     try:
-        progress('checking-source')
+        progress('checking-source', error=None)
         info_file = folder / 'source.json'
         info = read_json(info_file)
         if not info:
@@ -517,7 +547,7 @@ def process(url, character, author, local_file=None, every_frame=False, dense=Fa
         started = time.monotonic()
         for number, (index, second, frame) in enumerate(selected):
             check_stop()
-            digest = hashlib.sha256(frame.read_bytes() + b'counter-symbol-v1' + author.encode() + config()['model'].encode() + PROMPT.encode()
+            digest = hashlib.sha256(frame.read_bytes() + b'counter-symbol-v2' + author.encode() + config()['model'].encode() + PROMPT.encode()
                                     + chapter_at(info, second).encode() + character.encode()).hexdigest()[:24]
             cached = cache / f'{digest}.json'
             answer = read_json(cached)
@@ -531,8 +561,6 @@ def process(url, character, author, local_file=None, every_frame=False, dense=Fa
                 observation.update(routeStartSecond=start/fps, startFrame=str(frames[start].relative_to(folder)).replace('\\', '/'))
             observations.append(observation)
             write_json(folder / 'observations.json', observations)
-            progress('reading-frames', processedFrames=number + 1,
-                     processingSeconds=round(time.monotonic() - started), currentSecond=second)
             # Preserve approvals/corrections on resumed scans by stable ID.
             previous = {c['id']: c for c in read_json(folder / 'candidates.json', [])}
             routes = group_routes(observations, job_id)
@@ -543,6 +571,9 @@ def process(url, character, author, local_file=None, every_frame=False, dense=Fa
             routes.extend(c for key, c in previous.items() if key not in route_ids
                           and (c.get('reviewEdited') or c.get('approved') or key.startswith('manual-')))
             write_json(folder / 'candidates.json', routes)
+            progress('reading-frames', processedFrames=number + 1, candidateCount=len(routes),
+                     processingSeconds=round(time.monotonic() - started), currentSecond=second,
+                     modelWarningFrames=sum(bool(o.get('modelReadFailed')) for o in observations))
         progress('needs-review', candidateCount=len(read_json(folder / 'candidates.json', [])),
                  scanComplete=not state['partialRun'])
         return state

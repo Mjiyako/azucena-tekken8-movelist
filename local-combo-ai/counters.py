@@ -35,16 +35,21 @@ def read(frame):
         return {'available': False, 'damage': None, 'hits': None, 'text': [], 'disagreement': False}
     with Image.open(frame) as image:
         w, h = image.size
-        counter = image.crop((0, int(h * .18), int(w * .36), int(h * .65)))
-        gray = ImageOps.autocontrast(ImageOps.grayscale(counter)).resize((counter.width*2, counter.height*2))
-        variants = [gray, gray.point(lambda p: 255 if p > 185 else 0)]
         texts = []
-        for variant in variants:
-            buffer = io.BytesIO()
-            variant.save(buffer, format='PNG')
-            result = subprocess.run([tool,'stdin','stdout','-l','eng','--psm','6'],
-                input=buffer.getvalue(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=30, check=True)
-            texts.append(result.stdout.decode('utf-8', errors='replace'))
+        # Isolate the in-battle counter before the broad fallback. Scenery in the
+        # previous large crop overwhelmed Tesseract's line segmentation.
+        for box in [(int(w*.035), int(h*.27), int(w*.23), int(h*.42)),
+                    (0, int(h*.18), int(w*.36), int(h*.65))]:
+            counter = image.crop(box)
+            gray = ImageOps.autocontrast(ImageOps.grayscale(counter)).resize((counter.width*3, counter.height*3))
+            for variant in [gray, gray.point(lambda p: 255 if p > 185 else 0)]:
+                buffer = io.BytesIO()
+                variant.save(buffer, format='PNG')
+                result = subprocess.run([tool,'stdin','stdout','-l','eng','--psm','6'],
+                    input=buffer.getvalue(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=30, check=True)
+                texts.append(result.stdout.decode('utf-8', errors='replace'))
+            if any(parse(text)[0] is not None for text in texts):
+                break
     readings = [parse(text) for text in texts]
     damages = {damage for damage, _ in readings if damage is not None}
     hits = {hit for _, hit in readings if hit is not None}

@@ -1,4 +1,5 @@
 import tempfile
+import json
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -12,6 +13,27 @@ def observation(second, damage, hits, notation='df+2 ► 4'):
 
 
 class ExtractionTests(unittest.TestCase):
+    def test_truncated_model_json_is_retried_before_returning_a_reading(self):
+        value = dict(kind='combo',title='',character='Anna',section='Normal Hit',
+                     notation='df+2',damage=20,hits=1,category='normal',conditions=[],
+                     route_complete=False,legible=True,uncertainties=[])
+        with tempfile.TemporaryDirectory() as temp, patch.object(engine, 'HOME', Path(temp)), \
+             patch.object(engine, 'api', side_effect=[{'response':'{"uncertainties":['},
+                                                     {'response':json.dumps(value)}]) as generate:
+            actual, _ = engine.generate_reading({'prompt':'Read frame'})
+            self.assertEqual(actual, value)
+            self.assertEqual(generate.call_count, 2)
+
+    def test_repeated_invalid_model_output_becomes_manual_inspection_not_a_crash(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(engine, 'HOME', Path(temp)), \
+             patch.object(engine, 'api', return_value={'response':'{"uncertainties":['}):
+            actual, _ = engine.generate_reading({'prompt':'Read frame'})
+            self.assertTrue(actual['modelReadFailed'])
+            self.assertIsNone(actual['notation'])
+            self.assertIsNone(actual['damage'])
+            self.assertFalse(actual['legible'])
+            self.assertEqual(len(list((Path(temp)/'inference-errors').glob('*.json'))),1)
+
     def test_counter_episodes_keep_completed_totals_and_pre_hit_lead_in(self):
         readings = [dict(index=i,damage=d,hits=h) for i,(d,h) in enumerate([
             (None,None),(20,1),(44,2),(44,2),(None,None),(None,None),(20,1),(60,3)])]

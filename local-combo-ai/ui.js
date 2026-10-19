@@ -16,9 +16,9 @@ async function refresh(){
     if(!$('#character').options.length) for(const c of state.characters){const o=element('option',c.name);o.value=c.id;$('#character').append(o);}
     const activeJob=state.jobs.find(j=>['reading-frames','downloading','extracting-frames','checking-source'].includes(j.status));
     $('#status').textContent=state.active.error||state.active.message;
-    if(state.active.busy&&activeJob)$('#status').textContent+=`\n${activeJob.title||activeJob.id}: ${activeJob.processedFrames||0}/${activeJob.selectedFrames||'?'} model frames · video ${Math.floor(activeJob.currentSecond||0)}s`;
+    if(activeJob)$('#status').textContent=`${state.active.busy?'Running':'Saved job progress'}: ${activeJob.title||activeJob.id}: ${activeJob.processedFrames||0}/${activeJob.selectedFrames||'?'} model frames · video ${Math.floor(activeJob.currentSecond||0)}s`;
     $('#jobs').replaceChildren();
-    for(const job of state.jobs){const row=element('div',undefined,'job'),info=element('div',job.title||job.id);info.append(element('small',`${job.author} · ${job.character} · ${job.status} · ${job.candidateCount||0} candidates${job.partialRun?' · PARTIAL TEST':''}`));const open=element('button','Review / inspect');open.onclick=()=>openJob(job.id).catch(message);row.append(info,open);$('#jobs').append(row);}
+    for(const job of state.jobs){const row=element('div',undefined,'job'),info=element('div',job.title||job.id);info.append(element('small',`${job.author} · ${job.character} · ${job.status} · ${job.candidateCount||0} candidates${job.selectedFrames?` · ${job.processedFrames||0}/${job.selectedFrames} frames`:''}${job.partialRun?' · PARTIAL TEST':''}`));if(job.error)info.append(element('small',`Error: ${job.error}`,'warning'));if(job.modelWarningFrames)info.append(element('small',`${job.modelWarningFrames} model readings need manual inspection`,'warning'));const open=element('button','Review / inspect');open.onclick=()=>openJob(job.id).catch(message);row.append(info,open);$('#jobs').append(row);}
   } catch(error){message(error);}
 }
 $('#scan').onsubmit=async event=>{event.preventDefault();try{await request('/api/start',{url:$('#url').value,character:$('#character').value,author:$('#author').value,file:$('#file').value,everyFrame:$('#everyFrame').checked,dense:$('#dense').checked});await refresh();}catch(error){message(error);}};
