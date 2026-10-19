@@ -1,4 +1,4 @@
-# GitHub Pages builds the static app from main. Local development tools stay in Git.
+# Legacy Jekyll fallback exclusions. The Actions workflow packages runtime files explicitly.
 exclude:
   - tools
   - neonfighters-scraper

@@ -52,13 +52,27 @@ The updater follows the source collection's Next links, with a delay between req
 
 The entire download must match the collection's declared count before anything is replaced. HTTP failures, changed markup, missing numeric damage, older patches, looping pagination, or an incomplete download stop the update. The previous complete file is kept as `data/combos-season3.json.bak` on subsequent updates. If the site changes during a download, rerun once; if it keeps failing, adjust `parsePage()` to the new markup. Do not replace missing values with guessed damage.
 
-## Publish to GitHub Pages
+## Automatic GitHub updates
+
+[Refresh combos and deploy Pages](https://github.com/Mjiyako/azucena-tekken8-movelist/actions/workflows/combos-and-pages.yml) checks the primary Season 3 collection every six hours: **02:17, 08:17, 14:17, and 20:17 South Africa time** (00:17, 06:17, 12:17, and 18:17 UTC). GitHub may delay scheduled runs.
+
+The workflow installs the locked dependencies, runs parser tests, downloads and validates the entire collection, and merges the curated supplemental references. When combo content changes, it commits only `data/combos-season3.json` to `main` and explicitly deploys the updated static app to GitHub Pages. Unchanged downloads preserve the data timestamp and create no commit or scheduled deployment. Source errors fail the job before publication, preserving the last live site.
+
+Curated video/wiki references are preserved but are not automatically re-verified against future game patches. Only the primary source collection is automatically downloaded.
+
+To check immediately, open the workflow above, select **Run workflow**, and choose `main`. A manual run checks combos and redeploys even if data is unchanged, which is useful for recovery or verification. Actions logs show whether the collection changed and whether deployment succeeded. No personal token or additional repository secret is needed at runtime; the workflow uses GitHub's built-in token with job-specific permissions.
+
+GitHub can disable schedules in a public repository after 60 days without repository activity. If that happens, re-enable this workflow in Actions. The site keeps serving its last successful version.
+
+## Publish code changes to GitHub Pages
 
 Repository: [Mjiyako/azucena-tekken8-movelist](https://github.com/Mjiyako/azucena-tekken8-movelist).
 
 Live app: https://mjiyako.github.io/azucena-tekken8-movelist/
 
-GitHub Pages builds and deploys this static app from `main`. There is no application build step. After refreshing combos locally, publish the updated data with:
+GitHub Pages uses **GitHub Actions** as its publishing source. Push app changes to `main` to deploy them. The workflow packages only runtime files and JSON character/combo data; local launchers, dependencies, backup files, and scraper tools are excluded from the published site. `deployment.json` identifies the deployed source commit.
+
+The updater can still run locally with `Update Combos.cmd`. To publish a local refresh manually:
 
 ```powershell
 Set-Location 'C:\Users\mjiya\Desktop\Tekken Book\azucena-tekken8-movelist'
@@ -68,11 +82,9 @@ git commit -m "Refresh Season 3 combos"
 git push origin main
 ```
 
-If you edited curated references, also run `git add data/combos-season3-supplemental.json` before committing. For code or layout changes, stage the specific changed source files too. If Git reports nothing to commit, the tracked content is already current.
+If you edited curated references, also stage `data/combos-season3-supplemental.json` before committing. For layout/code changes, stage the specific changed source files. If Git reports nothing to commit, tracked content is already current.
 
-Wait for the **pages build and deployment** run under the repository's Actions tab to succeed, then reload the live app online. Installed copies may need to be closed and reopened after the deployment. The service worker uses the network first and caches successful responses for offline use.
-
-`Update Combos.cmd` refreshes the local data; publishing requires the Git commands above. Dependencies and data backups are ignored by Git. `_config.yml` excludes local tools and launchers from the Pages output, while keeping them in the repository so you can run the updater after cloning it.
+Wait for **Refresh combos and deploy Pages** to succeed in Actions, then reload the live app online. The service worker uses the network first and caches successful responses for offline use.
 
 ## Sources and coverage — 19 October 2026
 
@@ -90,4 +102,4 @@ Damage depends on the listed route, Heat, counter hits, walls, stage conditions,
 
 ## Validation
 
-Five importer tests pass, including character alias mapping and preservation/validation of supplemental records. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
+Six importer tests pass, including character alias mapping, no-op detection, and preservation/validation of supplemental records. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.

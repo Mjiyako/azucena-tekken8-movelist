@@ -181,6 +181,6 @@ Repository: https://github.com/Mjiyako/azucena-tekken8-movelist
 
 Live app: https://mjiyako.github.io/azucena-tekken8-movelist/
 
-GitHub Pages builds from `main`. Commit and push application changes to that branch. After a later combo refresh, commit `data/combos-season3.json` and push; when editing curated references, commit the supplemental JSON as well. See README.md for the exact commands. Local dependencies and backups are ignored, and local tool scripts are excluded from the published Pages output. Cache/assets are v19.
+GitHub Actions checks the primary collection every six hours and explicitly deploys Pages after changed data is committed to `main`. Commit and push application changes to that branch. After a later combo refresh, commit `data/combos-season3.json` and push; when editing curated references, commit the supplemental JSON as well. See README.md for the exact commands. Local dependencies and backups are ignored, and local tool scripts are excluded from the published Pages output. Cache/assets are v19.
 
-Validation: five importer tests pass, the complete 21-page refresh succeeds, all 41 roster coverage counts are nonzero, and browser checks show damage cards for each of the eight characters.
+Validation: six importer tests pass, the complete 21-page refresh succeeds, all 41 roster coverage counts are nonzero, and browser checks show damage cards for each of the eight characters.

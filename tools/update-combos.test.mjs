@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parsePage, characterId, mergeSupplemental } from './update-combos.mjs';
+import { parsePage, characterId, mergeSupplemental, hasDatasetChanged } from './update-combos.mjs';
 import { readFile } from 'node:fs/promises';
 
 const fixture = (patch = 'v3.02', damage = '82 damages') => `
@@ -36,6 +36,17 @@ test('maps source character aliases to the app roster', () => {
   assert.equal(characterId('jack8'), 'jack-8');
   assert.equal(characterId('jin'), 'jin-kazama');
   assert.equal(characterId('anna'), 'anna');
+});
+test('unchanged downloads do not create timestamp-only updates', () => {
+  const previous = { updatedAt: 'yesterday', combos: [{ id: 'b', damage: 70 }, { id: 'a', damage: 60 }],
+    coverage: [{ id: 'anna', count: 2 }], sources: ['b', 'a'] };
+  const next = { sources: ['a', 'b'], coverage: [{ count: 2, id: 'anna' }],
+    combos: [{ damage: 60, id: 'a' }, { damage: 70, id: 'b' }], updatedAt: 'today' };
+  assert.equal(hasDatasetChanged(previous, next), false);
+  assert.equal(hasDatasetChanged(previous, { ...next, combos: [...next.combos, { id: 'c', damage: 80 }] }), true);
+  assert.equal(hasDatasetChanged(previous, { ...next, combos: [{ id: 'a', damage: 61 }, next.combos[1]] }), true);
+  assert.equal(hasDatasetChanged(previous, { ...next, combos: next.combos.slice(1) }), true);
+  assert.equal(hasDatasetChanged(null, next), true);
 });
 test('supplemental entries survive an upstream refresh and cover the missing characters', async () => {
   const supplemental = JSON.parse(await readFile(new URL('../data/combos-season3-supplemental.json', import.meta.url), 'utf8'));

@@ -1,0 +1,107 @@
+name: Refresh combos and deploy Pages
+
+on:
+  schedule:
+    # Every six hours, away from the busy start of the hour (UTC).
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/combos-and-pages.yml'
+      - 'index.html'
+      - 'styles.css'
+      - 'app.js'
+      - 'service-worker.js'
+      - 'manifest.webmanifest'
+      - 'data/**'
+      - 'tools/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tekken-book-pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/package-lock.json
+      - run: npm ci --prefix tools --no-audit --no-fund
+      - run: npm test --prefix tools
+      - name: Fetch and validate Season 3 combos
+        run: node tools/update-combos.mjs
+      - name: Commit changed combo data
+        id: commit
+        shell: bash
+        run: |
+          if git diff --quiet -- data/combos-season3.json; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            echo 'No combo changes; no commit or scheduled deployment needed.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/combos-season3.json
+          git commit -m 'Refresh Season 3 combo data'
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+          echo 'Updated combo data committed to main; Pages deployment follows.' >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    needs: refresh
+    if: >-
+      always() && !cancelled() &&
+      (needs.refresh.result == 'success' || needs.refresh.result == 'skipped') &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || needs.refresh.outputs.changed == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Refresh may have committed data after this workflow started.
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: actions/configure-pages@v6
+      - name: Prepare static app only
+        run: node tools/build-pages.mjs
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: .pages-dist
+
+  deploy:
+    needs: build
+    if: always() && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

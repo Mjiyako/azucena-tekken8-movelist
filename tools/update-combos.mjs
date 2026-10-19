@@ -8,6 +8,26 @@ const SOURCE = 'https://tekken8combo.kagewebsite.com/selection-season-3-combo/';
 const clean = value => value.replace(/\s+/g, ' ').trim();
 export const characterId = slug => ({ jin: 'jin-kazama', jack8: 'jack-8' }[slug] || slug);
 
+export function hasDatasetChanged(previous, next) {
+  const canonical = value => {
+    if (Array.isArray(value)) return value.map(canonical);
+    if (value && typeof value === 'object') return Object.fromEntries(
+      Object.keys(value).sort().map(key => [key, canonical(value[key])])
+    );
+    return value;
+  };
+  const comparable = document => {
+    if (!document) return null;
+    const { updatedAt, ...content } = document;
+    return canonical({ ...content,
+      combos: [...(content.combos || [])].sort((a, b) => a.id.localeCompare(b.id)),
+      coverage: [...(content.coverage || [])].sort((a, b) => a.id.localeCompare(b.id)),
+      sources: [...(content.sources || [])].sort(),
+    });
+  };
+  return JSON.stringify(comparable(previous)) !== JSON.stringify(comparable(next));
+}
+
 export function mergeSupplemental(primary, supplemental, roster) {
   const allowed = new Set(roster.map(character => character.id));
   const records = new Map(primary.map(combo => [combo.id, { ...combo, character: characterId(combo.character) }]));
@@ -97,8 +117,15 @@ export async function update({ dryRun = false } = {}) {
   const missing = coverage.filter(character => !character.count).map(character => character.name);
   console.log(`${combos.length} combos; ${coverage.length - missing.length}/${coverage.length} app characters covered.`);
   if (missing.length) console.log(`No verified Season 3 entries: ${missing.join(', ')}`);
+  const target = path.join(ROOT, 'data/combos-season3.json');
+  let previous;
+  try { previous = JSON.parse(await readFile(target, 'utf8')); }
+  catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (!hasDatasetChanged(previous, document)) {
+    console.log('No combo data changes. Existing file and update timestamp kept.');
+    return previous;
+  }
   if (!dryRun) {
-    const target = path.join(ROOT, 'data/combos-season3.json');
     await mkdir(path.dirname(target), { recursive: true });
     // Preserve the previous complete dataset; replace only after every page validates.
     try { await writeFile(`${target}.bak`, await readFile(target)); }
