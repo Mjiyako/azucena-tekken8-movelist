@@ -6,6 +6,8 @@ test('chapter categories retain reviewed mini-combos and infer community conditi
   assert.equal(inputs.category({ notation: 'CH df+2' }), 'counter');
   assert.equal(inputs.category({ conditions: ['Heat'] }), 'heat');
   assert.equal(inputs.category({ conditions: ['Wall break'] }), 'wall-carry');
+  assert.equal(inputs.category({ conditions: ['Wall'] }), 'wall');
+  assert.equal(inputs.category({ conditions: ['Low Parry'] }), 'situational');
   assert.equal(inputs.category({ category: 'follow-up', conditions: ['Counter hit'] }), 'follow-up');
   assert.equal(inputs.category({ notation: 'df+2' }), 'normal');
 });

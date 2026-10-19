@@ -37,9 +37,11 @@
   function category(combo) {
     if (sections.some(([id]) => id === combo.category)) return combo.category;
     const conditions = (combo.conditions || []).join(' ');
-    if (/wall|floor|balcony|stage\s*:/i.test(conditions)) return 'wall-carry';
+    if (/wall break|floor|balcony|stage\s*:/i.test(conditions)) return 'wall-carry';
+    if (/wall/i.test(conditions)) return 'wall';
     if (/heat/i.test(conditions)) return 'heat';
     if (/counter hit/i.test(conditions) || /^CH\b/i.test(combo.notation || '')) return 'counter';
+    if (/low parry|rage/i.test(conditions)) return 'situational';
     return 'normal';
   }
   function timestampUrl(combo) {
