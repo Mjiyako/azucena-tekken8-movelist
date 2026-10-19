@@ -3,8 +3,11 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { applyCreatorOverrides, creatorReviews } from './creator-overrides.mjs';
 import { hasDatasetChanged } from './update-combos.mjs';
+import { refreshCreatorData } from './refresh-creator-data.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const policy = JSON.parse(await readFile(path.join(root, 'data/combo-source-policy.json'), 'utf8'));
+if (!policy.allowCommunitySourceImports) { await refreshCreatorData(); process.exit(0); }
 const readJson = async file => JSON.parse(await readFile(path.join(root, file), 'utf8'));
 const roster = await readJson('data/characters.json');
 const previous = await readJson('data/combos-season3.json');

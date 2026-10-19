@@ -1,0 +1,8 @@
+{
+  "allowedAuthors": ["RyzingSol", "TheFURY"],
+  "season": 3,
+  "requireVideoTimestamp": true,
+  "reviewMode": "human-approval",
+  "analysisRuntime": "local-ollama",
+  "allowCommunitySourceImports": false
+}

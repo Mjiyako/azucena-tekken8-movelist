@@ -1,0 +1,12 @@
+{
+  "model": "qwen3-vl:2b-instruct",
+  "sampleFps": 2,
+  "keyframeSeconds": 3,
+  "maxVideoMinutes": 90,
+  "publishMode": "review",
+  "weeklyVideoLimit": 100,
+  "channels": {
+    "RyzingSol": "https://www.youtube.com/@ryzingsol/videos",
+    "TheFURY": "https://www.youtube.com/@TK_TheFURY/videos"
+  }
+}

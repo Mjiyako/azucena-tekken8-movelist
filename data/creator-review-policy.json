@@ -14,5 +14,9 @@
   ],
   "selection": "Newest verified Season 3 character guide independently for EACH creator. Backfill existing registered guides as well as new uploads.",
   "replacement": "Replace only the selected creator’s routes for that character after reviewing every route in the full guide. Preserve the other creator and community entries.",
-  "incompleteReview": "Retain existing published data. Record review progress and unverified routes in a separate pending review ledger; resume without claiming complete coverage."
+  "incompleteReview": "Retain existing published data. Record review progress and unverified routes in a separate pending review ledger; resume without claiming complete coverage.",
+  "analysisRuntime": "local-ollama",
+  "reviewRequired": true,
+  "schedule": "Windows Task Scheduler: Mji Local Combo AI - Weekly; Monday 09:00 local time",
+  "codexHeartbeat": "paused"
 }

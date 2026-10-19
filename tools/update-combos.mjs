@@ -90,6 +90,11 @@ async function request(url) {
 }
 
 export async function update({ dryRun = false } = {}) {
+  const policy = JSON.parse(await readFile(path.join(ROOT, 'data/combo-source-policy.json'), 'utf8'));
+  if (!policy.allowCommunitySourceImports) {
+    const { refreshCreatorData } = await import('./refresh-creator-data.mjs');
+    return refreshCreatorData({ dryRun });
+  }
   const roster = JSON.parse(await readFile(path.join(ROOT, 'data/characters.json'), 'utf8'));
   const records = new Map(), visited = new Set();
   let url = SOURCE, expectedCount;

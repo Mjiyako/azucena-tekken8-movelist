@@ -3,3 +3,6 @@ node_modules/
 *.tmp
 .tmp_tekken/
 .pages-dist/
+.local-combo-ai/
+local-combo-ai/__pycache__/
+local-combo-ai/.pytest_cache/

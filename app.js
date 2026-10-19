@@ -565,7 +565,8 @@ function renderComboImages(container, cards) {
 }
 
 function characterCombos() {
-  return (COMBO_DATA?.combos || []).filter(combo => combo.character === state.character);
+  return (COMBO_DATA?.combos || []).filter(combo => combo.character === state.character
+    && ['RyzingSol', 'TheFURY'].includes(combo.author) && TekkenComboInputs.timestampUrl(combo));
 }
 
 function createComboInputPictures(notation) {
@@ -615,7 +616,7 @@ function renderScans() {
     .sort((a, b) => comboSort === 'hits' ? (a.hits ?? Infinity) - (b.hits ?? Infinity) || b.damage - a.damage : b.damage - a.damage);
   const allVideoRoutes = characterCombos().filter(combo => TekkenComboInputs.timestampUrl(combo));
   document.querySelector('#creatorCoverage').textContent =
-    `Timestamped video routes: RyzingSol ${allVideoRoutes.filter(combo => combo.author === 'RyzingSol').length} · TheFURY ${allVideoRoutes.filter(combo => combo.author === 'TheFURY').length}. Full guide coverage is still being reviewed; other entries retain their original sources.`;
+    `Imported video routes: RyzingSol ${allVideoRoutes.filter(combo => combo.author === 'RyzingSol').length} · TheFURY ${allVideoRoutes.filter(combo => combo.author === 'TheFURY').length}. Creator guides still require local extraction and review.`;
   const groups = new Map();
   const navigation = document.createElement('nav');
   navigation.className = 'combo-section-nav';
@@ -697,7 +698,7 @@ function renderScans() {
     empty.className = 'empty-state';
     empty.textContent = comboLoadError ? 'Combo data could not be loaded. Run the updater and refresh.'
       : characterCombos().length ? 'No verified combos match this creator or search yet. The full video guides are linked above.'
-      : 'No verified Season 3 combos for this character in the source collection yet. Run the updater later to check for new entries.';
+      : 'No reviewed RyzingSol or TheFURY routes imported for this character yet. Open a guide above or review a local AI extraction.';
     scanGrid.appendChild(empty);
   }
   return combos.length;
@@ -920,7 +921,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=22");
+  navigator.serviceWorker.register("service-worker.js?v=23");
 }
 
 function updateGoodFilterAvailability() {

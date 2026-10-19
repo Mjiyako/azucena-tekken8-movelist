@@ -1,9 +1,6 @@
 name: Refresh combos and deploy Pages
 
 on:
-  schedule:
-    # Every six hours, away from the busy start of the hour (UTC).
-    - cron: '17 */6 * * *'
   workflow_dispatch:
   push:
     branches: [main]
@@ -45,8 +42,8 @@ jobs:
           cache-dependency-path: tools/package-lock.json
       - run: npm ci --prefix tools --no-audit --no-fund
       - run: npm test --prefix tools
-      - name: Fetch and validate Season 3 combos
-        run: node tools/update-combos.mjs
+      - name: Validate and merge approved creator video combos
+        run: node tools/refresh-creator-data.mjs
       - name: Commit changed combo data
         id: commit
         shell: bash
