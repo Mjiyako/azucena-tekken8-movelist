@@ -60,7 +60,7 @@ The entire download must match the collection's declared count before anything i
 
 The workflow installs the locked dependencies, runs parser tests, downloads and validates the entire collection, and merges the curated supplemental references. When combo content changes, it commits only `data/combos-season3.json` to `main` and explicitly deploys the updated static app to GitHub Pages. Unchanged downloads preserve the data timestamp and create no commit or scheduled deployment. Source errors fail the job before publication, preserving the last live site.
 
-Curated video/wiki references are preserved but are not automatically re-verified against future game patches. Only the primary source collection is automatically downloaded.
+The primary source collection is downloaded every six hours. A separate weekly AI review inspects new RyzingSol and TheFURY Season 3 character combo videos and publishes complete character replacements after verification. Those replacements take priority over collection and supplemental routes. See CREATOR-REVIEWS.md for the review schedule, local runtime requirement, source selection, data contract and publishing steps.
 
 To check immediately, open the workflow above, select **Run workflow**, and choose `main`. A manual run checks combos and redeploys even if data is unchanged, which is useful for recovery or verification. Actions logs show whether the collection changed and whether deployment succeeded. No personal token or additional repository secret is needed at runtime; the workflow uses GitHub's built-in token with job-specific permissions.
 
@@ -104,10 +104,14 @@ Damage depends on the listed route, Heat, counter hits, walls, stage conditions,
 
 ## Validation
 
-Eight tests pass, including character alias mapping, no-op detection, preservation/validation of supplemental records, and visual input parsing. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
+Ten tests pass, including character alias mapping, no-op detection, preservation/validation of supplemental records, and visual input parsing. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
 
 ## Combo video guides
 
 `data/combo-guides.json` contains checked Season 3 links for 39 characters. RyzingSol links are sourced from the respective Wavu Wiki character combo pages, which label them Season 3 Combo Guide. Selected TheFURY links come from explicitly titled Season 3 videos, including Anna, Armor King, Bryan, Fahkumram, and Feng. Bob and Kunimitsu have no confirmed creator guide in this registry yet; their combo cards still display input diagrams.
 
 The linked guide does not imply that every combo card was created by that creator. The Source link on each card preserves its actual attribution. Guide links are curated separately from the automatic combo data updater.
+
+## Weekly creator reviews
+
+See [CREATOR-REVIEWS.md](CREATOR-REVIEWS.md). The weekly AI review is scheduled in Codex; GitHub performs publication and continues its independent six-hour collection refresh. Keep the local computer and desktop app running for the video review. Existing entries are retained whenever a newer video cannot be fully verified.

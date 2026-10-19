@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "season": 3,
+  "monitoringStartedAt": "2026-10-19T07:15:12Z",
+  "channels": [
+    { "author": "RyzingSol", "url": "https://www.youtube.com/@ryzingsol/videos" },
+    { "author": "TheFURY", "url": "https://www.youtube.com/@TK_TheFURY/videos" }
+  ],
+  "selection": "Newest relevant character-specific Season 3 combo video across both channels, using verified publication time.",
+  "replacement": "Replace all combos for that character only after every combo in the selected video has been reviewed with its notation, exact damage, setup conditions and timestamp.",
+  "incompleteReview": "Keep the existing character dataset and retry later; never publish a partial or guessed extraction."
+}

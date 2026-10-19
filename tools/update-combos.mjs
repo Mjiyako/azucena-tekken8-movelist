@@ -2,6 +2,7 @@ import * as cheerio from 'cheerio';
 import { readFile, writeFile, rename, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { applyCreatorOverrides } from './creator-overrides.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = 'https://tekken8combo.kagewebsite.com/selection-season-3-combo/';
@@ -107,13 +108,15 @@ export async function update({ dryRun = false } = {}) {
   }
   if (!expectedCount || records.size !== expectedCount) throw new Error(`Expected ${expectedCount} records, received ${records.size}. Source may have changed during download; retry. Existing data kept.`);
   const supplemental = JSON.parse(await readFile(path.join(ROOT, 'data/combos-season3-supplemental.json'), 'utf8'));
-  const combos = mergeSupplemental([...records.values()], supplemental.combos, roster);
+  const overrides = JSON.parse(await readFile(path.join(ROOT, 'data/creator-combo-overrides.json'), 'utf8'));
+  const combos = applyCreatorOverrides(mergeSupplemental([...records.values()], supplemental.combos, roster), overrides, roster);
   const coverage = roster.map(character => ({ id: character.id, name: character.name,
     count: combos.filter(combo => combo.character === character.id).length }));
   const document = { schemaVersion: 1, season: 3, source: SOURCE,
     updatedAt: new Date().toISOString(), pageCount: visited.size,
     primaryCount: records.size, supplementalCount: supplemental.combos.length,
-    sources: [SOURCE, ...new Set(supplemental.combos.map(combo => combo.sourceUrl))], combos, coverage };
+    sources: [SOURCE, ...new Set([...supplemental.combos.map(combo => combo.sourceUrl),
+      ...Object.values(overrides.characters).map(review => review.videoUrl)])], combos, coverage };
   const missing = coverage.filter(character => !character.count).map(character => character.name);
   console.log(`${combos.length} combos; ${coverage.length - missing.length}/${coverage.length} app characters covered.`);
   if (missing.length) console.log(`No verified Season 3 entries: ${missing.join(', ')}`);
