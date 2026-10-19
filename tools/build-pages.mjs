@@ -13,8 +13,8 @@ for (const character of roster.filter(character => character.available)) {
   JSON.parse(await readFile(path.join(root, `data/${character.id}.json`), 'utf8'));
 }
 await mkdir(path.join(output, 'data'), { recursive: true });
-for (const file of ['index.html', 'styles.css', 'app.js', 'service-worker.js', 'manifest.webmanifest',
-  'data/characters.json', 'data/combos-season3.json', ...roster.filter(character => character.available).map(character => `data/${character.id}.json`)]) {
+for (const file of ['index.html', 'styles.css', 'app.js', 'combo-inputs.js', 'service-worker.js', 'manifest.webmanifest',
+  'data/characters.json', 'data/combos-season3.json', 'data/combo-guides.json', ...roster.filter(character => character.available).map(character => `data/${character.id}.json`)]) {
   await cp(path.join(root, file), path.join(output, file));
 }
 const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();

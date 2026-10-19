@@ -1056,3 +1056,24 @@ main { padding-top:1.5rem; }
 .combo-source-notes { margin-top:.8rem; font-size:.75rem; color:var(--muted); line-height:1.6; }
 .combo-source-notes p { margin:.65rem 0; }
 .combo-source-notes a { display:inline-block; margin-right:1rem; }
+.combo-input-pictures { display:flex; align-items:center; flex-wrap:wrap; gap:.65rem .28rem; padding:1rem .5rem; margin:.9rem 0; border:1px solid var(--line); border-radius:.5rem; background:var(--panel-2); }
+.combo-input-pictures .input-token.direction { width:2.25rem; height:2.25rem; min-width:2.25rem; }
+.combo-input-pictures .input-token.button-pad { width:2.75rem; min-width:2.75rem; height:2.4rem; }
+.combo-input-pictures .pad-dot { width:1rem; height:1rem; font-size:.65rem; }
+.combo-input-pictures .pad-dot.p1,.combo-input-pictures .pad-dot.p2 { top:.12rem; }
+.combo-input-pictures .pad-dot.p3,.combo-input-pictures .pad-dot.p4 { bottom:.12rem; }
+.combo-input-pictures .pad-dot.p1,.combo-input-pictures .pad-dot.p3 { left:.15rem; }
+.combo-input-pictures .pad-dot.p2,.combo-input-pictures .pad-dot.p4 { right:.15rem; }
+.combo-input-pictures .pad-dot:not(.active) { background:var(--muted); opacity:.25; box-shadow:none; }
+.combo-input-pictures .pad-dot.active { color:#0d1118; }
+.combo-input-pictures .hold-badge { font-size:.45rem; bottom:-.55rem; padding:.08rem .2rem; }
+.combo-symbol { max-width:100%; overflow-wrap:anywhere; color:var(--muted); font-size:.8rem; }
+.combo-symbol-text { border:1px solid var(--line); border-radius:.3rem; padding:.35rem .45rem; color:var(--text); background:var(--panel); }
+.combo-symbol-timing { font-size:.55rem; font-weight:800; color:var(--blue); }
+.combo-symbol-separator { font-size:.65rem; }
+.combo-symbol-separator.major { font-size:1.2rem; margin:0 .2rem; color:var(--blue); }
+.combo-text-version { margin:.5rem 0 .85rem; color:var(--muted); font-size:.75rem; }
+.combo-guides { display:flex; flex-wrap:wrap; align-items:center; gap:.6rem; margin:.9rem 0; }
+.combo-guides span { width:100%; color:var(--muted); font-size:.75rem; }
+.combo-guides a { color:var(--blue); background:var(--panel); border:1px solid var(--line); border-radius:.4rem; padding:.55rem .75rem; font-size:.8rem; text-decoration:none; }
+.combo-picture-key { color:var(--muted); font-size:.72rem; line-height:1.6; }

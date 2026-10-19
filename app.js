@@ -23,6 +23,7 @@ let MOVE_DATA = [];
 let SCAN_DATA = [];
 let CHARACTERS = [];
 let COMBO_DATA = null;
+let COMBO_GUIDES = {};
 let comboLoadError = false;
 let comboSort = 'damage';
 
@@ -562,6 +563,45 @@ function characterCombos() {
   return (COMBO_DATA?.combos || []).filter(combo => combo.character === state.character);
 }
 
+function createComboInputPictures(notation) {
+  const strip = document.createElement('div');
+  strip.className = 'combo-input-pictures';
+  strip.setAttribute('role', 'img');
+  strip.setAttribute('aria-label', `Combo inputs: ${notation}`);
+  for (const token of TekkenComboInputs.parse(notation)) {
+    let graphic;
+    if (token.kind === 'buttons') graphic = createToken({ type: 'button-pad', buttons: token.buttons, forceHold: token.held });
+    else if (token.kind === 'direction') graphic = createToken({ raw: token.raw, forceHold: token.held });
+    else {
+      graphic = document.createElement('span');
+      graphic.className = `combo-symbol combo-symbol-${token.kind}${token.major ? ' major' : ''}`;
+      graphic.textContent = token.text;
+    }
+    graphic.setAttribute('aria-hidden', 'true');
+    strip.appendChild(graphic);
+  }
+  return strip;
+}
+
+function renderComboGuides() {
+  const panel = document.querySelector('#comboGuides');
+  panel.replaceChildren();
+  const guides = COMBO_GUIDES[state.character] || [];
+  panel.hidden = !guides.length;
+  if (!guides.length) return;
+  const label = document.createElement('span');
+  label.textContent = 'Season 3 video guides';
+  panel.appendChild(label);
+  for (const guide of guides) {
+    const link = document.createElement('a');
+    link.href = guide.url;
+    link.textContent = `${guide.author} ↗`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    panel.appendChild(link);
+  }
+}
+
 function renderScans() {
   scanGrid.replaceChildren();
   const combos = characterCombos().filter(combo =>
@@ -585,7 +625,12 @@ function renderScans() {
     source.target = '_blank';
     source.rel = 'noopener noreferrer';
     source.textContent = `Source · ${combo.author || 'Tekken 8 Combo'}`;
-    card.append(heading, meta, notation, source);
+    const textVersion = document.createElement('details');
+    textVersion.className = 'combo-text-version';
+    const textSummary = document.createElement('summary');
+    textSummary.textContent = 'Text notation';
+    textVersion.append(textSummary, notation);
+    card.append(heading, meta, createComboInputPictures(combo.notation), textVersion, source);
     if (combo.notes || combo.damageBasis) {
       const details = document.createElement('details');
       details.className = 'combo-source-notes';
@@ -639,6 +684,7 @@ function render() {
 
   const moves = MOVE_DATA.filter(matchesFilter).filter(matchesQuery);
   linkedCount.textContent = characterCombos().length;
+  renderComboGuides();
   document.querySelector('#comboControls').hidden = state.view !== 'scans';
   document.querySelector('.filter-row').hidden = state.view === 'scans';
   searchInput.setAttribute('aria-label', state.view === 'scans' ? 'Search combos' : 'Search moves');
@@ -838,7 +884,7 @@ if (downloadPdfButton) {
 }
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("service-worker.js?v=20");
+  navigator.serviceWorker.register("service-worker.js?v=21");
 }
 
 function updateGoodFilterAvailability() {
@@ -911,6 +957,10 @@ if (characterSelect) {
 }
 
 async function init() {
+  try {
+    const response = await fetch('data/combo-guides.json');
+    if (response.ok) COMBO_GUIDES = (await response.json()).characters || {};
+  } catch (error) { console.warn('Video guide links unavailable', error); }
   try {
     const response = await fetch('data/combos-season3.json');
     if (!response.ok) throw new Error('Combo data unavailable');

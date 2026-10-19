@@ -1,0 +1,343 @@
+{
+  "season": 3,
+  "checkedAt": "2026-10-19",
+  "characters": {
+    "azucena": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=Wzg_mPYCvFE",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Azucena_combos"
+      }
+    ],
+    "alisa": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=A51M5wxLOiI",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Alisa_combos"
+      }
+    ],
+    "armor-king": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=Oogc_SUmFjo",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Armor_King_combos"
+      },
+      {
+        "author": "TheFURY",
+        "url": "https://www.youtube.com/watch?v=-pcYbpZRqaE",
+        "season": 3
+      }
+    ],
+    "asuka": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=EPeqqn4QPqs",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Asuka_combos"
+      }
+    ],
+    "bryan": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=t1zIuYLcjVE",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Bryan_combos"
+      },
+      {
+        "author": "TheFURY",
+        "url": "https://www.youtube.com/watch?v=lpVJ6Plxi_A",
+        "season": 3
+      }
+    ],
+    "claudio": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=3tqdHjcWUnE",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Claudio_combos"
+      }
+    ],
+    "clive": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=y9a4nq-m4nw",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Clive_combos"
+      }
+    ],
+    "devil-jin": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=jrtsBvNjYmk",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Devil_Jin_combos"
+      }
+    ],
+    "eddy": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=3giF9GPmHQs",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Eddy_combos"
+      }
+    ],
+    "fahkumram": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=j-KckCppYz8",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Fahkumram_combos"
+      },
+      {
+        "author": "TheFURY",
+        "url": "https://www.youtube.com/watch?v=6lJjf_BrrnM",
+        "season": 3
+      }
+    ],
+    "feng": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=TBk8s7dcRGY",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Feng_combos"
+      },
+      {
+        "author": "TheFURY",
+        "url": "https://www.youtube.com/watch?v=g4Jv_mo6pj8",
+        "season": 3
+      }
+    ],
+    "heihachi": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=bakVBHqOg2g",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Heihachi_combos"
+      }
+    ],
+    "hwoarang": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=sr5x_7onq84",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Hwoarang_combos"
+      }
+    ],
+    "jack-8": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=UrVZ0A4_YLc",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Jack-8_combos"
+      }
+    ],
+    "jin-kazama": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=2NXRwdDEfkg",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Jin_combos"
+      }
+    ],
+    "jun": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=hgcYdKwunEw",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Jun_combos"
+      }
+    ],
+    "kazuya": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=lcR2xrTmPqQ",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Kazuya_combos"
+      }
+    ],
+    "king": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=XVqeD_8wadc",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/King_combos"
+      }
+    ],
+    "kuma": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=H4_27uQFHWg",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Kuma_combos"
+      }
+    ],
+    "lars": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=gczHYUpuqCU",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Lars_combos"
+      }
+    ],
+    "lee": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=1pwoCyuxZRM",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Lee_combos"
+      }
+    ],
+    "leo": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=udvAa3o_MCc",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Leo_combos"
+      }
+    ],
+    "leroy": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=0eKO_2O-BaQ",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Leroy_combos"
+      }
+    ],
+    "lidia": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=mxoXJJDPTCo",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Lidia_combos"
+      }
+    ],
+    "lili": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=tJrPIcIBv1M",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Lili_combos"
+      }
+    ],
+    "xiaoyu": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=uHgLbpdH-OY",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Xiaoyu_combos"
+      }
+    ],
+    "law": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=cVSLwAh1FAw",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Law_combos"
+      }
+    ],
+    "nina": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=dtO5RgN1Y80",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Nina_combos"
+      }
+    ],
+    "panda": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=H4_27uQFHWg",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Panda_combos"
+      }
+    ],
+    "paul": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=s8nD1GWBLW0",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Paul_combos"
+      }
+    ],
+    "raven": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=kOFww_gdayM",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Raven_combos"
+      }
+    ],
+    "reina": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=-xmNLCL6UZ8",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Reina_combos"
+      }
+    ],
+    "dragunov": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=NS1qOGeP0J8",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Dragunov_combos"
+      }
+    ],
+    "shaheen": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=yHeSPqlRRsI",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Shaheen_combos"
+      }
+    ],
+    "steve": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=rEV_OBvENoI",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Steve_combos"
+      }
+    ],
+    "victor": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=cYCZWV95zKg",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Victor_combos"
+      }
+    ],
+    "yoshimitsu": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=WJNuY6M2WwI",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Yoshimitsu_combos"
+      }
+    ],
+    "zafina": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=B9WAC93KE7g",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Zafina_combos"
+      }
+    ],
+    "anna": [
+      {
+        "author": "RyzingSol",
+        "url": "https://www.youtube.com/watch?v=IKaAPbrhZxo",
+        "season": 3,
+        "sourceUrl": "https://wavu.wiki/t/Anna_combos"
+      },
+      {
+        "author": "TheFURY",
+        "url": "https://www.youtube.com/watch?v=HKGx3Syazxw",
+        "season": 3
+      }
+    ]
+  }
+}

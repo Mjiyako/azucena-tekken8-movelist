@@ -7,6 +7,8 @@ The existing app at `C:\Users\mjiya\Desktop\Tekken Book\azucena-tekken8-movelist
 - Simpler layout with Moves as the default view; extra filters and notation help expand when needed.
 - Light/dark mode button at the top. It starts with your system theme and remembers your choice.
 - Searchable Season 3 combo cards showing damage, hits, patch, Heat/Wall/Counter Hit conditions, contributor, and original source link.
+- Combo cards display direction arrows and four-button diagrams, including simultaneous presses and held directions. Text notation can be expanded underneath.
+- Season 3 video guide links from RyzingSol and TheFURY appear above the cards where verified. These character-level guide links are separate from each combo's own source attribution.
 - Sort combos by highest damage or fewest hits. Existing move data and PDF export are retained.
 
 ## Run the app
@@ -102,4 +104,10 @@ Damage depends on the listed route, Heat, counter hits, walls, stage conditions,
 
 ## Validation
 
-Six importer tests pass, including character alias mapping, no-op detection, and preservation/validation of supplemental records. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
+Eight tests pass, including character alias mapping, no-op detection, preservation/validation of supplemental records, and visual input parsing. The complete 21-page refresh succeeds. JavaScript syntax checks pass. Browser checks confirm damage cards for all eight previously missing characters. The prior theme and search behavior remain intact. The existing PDF export code is retained; PDF output has not been independently revalidated.
+
+## Combo video guides
+
+`data/combo-guides.json` contains checked Season 3 links for 39 characters. RyzingSol links are sourced from the respective Wavu Wiki character combo pages, which label them Season 3 Combo Guide. Selected TheFURY links come from explicitly titled Season 3 videos, including Anna, Armor King, Bryan, Fahkumram, and Feng. Bob and Kunimitsu have no confirmed creator guide in this registry yet; their combo cards still display input diagrams.
+
+The linked guide does not imply that every combo card was created by that creator. The Source link on each card preserves its actual attribution. Guide links are curated separately from the automatic combo data updater.

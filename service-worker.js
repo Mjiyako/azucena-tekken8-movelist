@@ -1,12 +1,14 @@
-const CACHE = "azucena-t8-movelist-v20";
+const CACHE = "azucena-t8-movelist-v21";
 const CORE = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./combo-inputs.js",
   "./manifest.webmanifest",
   "./data/characters.json",
   "./data/combos-season3.json",
+  "./data/combo-guides.json",
   "./data/azucena.json",
   "./data/alisa.json",
   "./data/anna.json",
